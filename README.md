@@ -1,11 +1,16 @@
 # SYPGruppe3Project26-27
 ## Ideen
-* 2D Game mit scores 3Stimmen 
-* Workoutplanner mit streak 
-* Habittracker mit streak 1Stimme
-* Kalorientracker
-* Ausgabentracker (Finanzen) 3Stimmen 
-* Routenplaner Fahrtentracker für Arbeitsspritbezahlung 
++ 2D Game mit scores 3Stimmen 
++ Workoutplanner mit streak
++ Habittracker mit streak 1Stimme
++ Kalorientracker
++ Ausgabentracker (Finanzen) 3Stimmen 
++ Routenplaner Fahrtentracker für Arbeitsspritbezahlung 
 
 *Das Glücksrad hat entscheiden:*
 Ausgabentracker (Finanzen) 
+
+## Ausgabentracker (Finanzen) MVP
++ Eine minimales GUI in dem man seine Ausgaben einsehen kann
++ Eine Erstversion einer Datenbank
++ Die Funktion ein pament einzutragen
