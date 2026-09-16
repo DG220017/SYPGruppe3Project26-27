@@ -7,5 +7,5 @@
 * Ausgabentracker (Finanzen) 3Stimmen 
 * Routenplaner Fahrtentracker für Arbeitsspritbezahlung 
 
-*Das Glücsrad hat entscheiden:*
+*Das Glücksrad hat entscheiden:*
 Ausgabentracker (Finanzen) 
