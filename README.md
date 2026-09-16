@@ -1,8 +1,11 @@
 # SYPGruppe3Project26-27
 ## Ideen
-* 2D Game mit scores 
+* 2D Game mit scores 3Stimmen 
 * Workoutplanner mit streak 
-* Habittracker mit streak 
+* Habittracker mit streak 1Stimme
 * Kalorientracker
-* Ausgabentrscker (Finanzen)
-* Routenplaner Fahrtentracker für Anbeitsspritbezahlung 
+* Ausgabentracker (Finanzen) 3Stimmen 
+* Routenplaner Fahrtentracker für Arbeitsspritbezahlung 
+
+*Das Glücsrad hat entscheiden:*
+Ausgabentracker (Finanzen) 
