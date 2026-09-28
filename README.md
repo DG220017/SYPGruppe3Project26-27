@@ -11,6 +11,6 @@
 Ausgabentracker (Finanzen) 
 
 ## Ausgabentracker (Finanzen) MVP
-+ Eine minimales GUI in dem man seine Ausgaben einsehen kann
++ Eine minimales GUI in dem man seine Einnahmen/Ausgaben einsehen kann
 + Eine Erstversion einer Datenbank
-+ Die Funktion ein pament einzutragen
++ Die Funktion ein payment einzutragen und wieder zu löschen
