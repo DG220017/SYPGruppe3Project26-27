@@ -5,6 +5,7 @@ import DAO.TransactionType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transactions")
@@ -82,5 +83,16 @@ public class Transaction {
 
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Transaction that)) return false;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -2,6 +2,10 @@ package entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -9,6 +13,10 @@ public class Account {
     @Id
     @GeneratedValue
     private int id;
+
+    @OneToMany
+    @JoinColumn(name = "transactions_id")
+    private List<Transaction> transactions= new ArrayList<>();
 
     private String username;
 
@@ -23,6 +31,18 @@ public class Account {
         this.id = id;
         this.username = username;
         this.balance = balance;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void addTransaction(Transaction transaction){
+        transactions.add(transaction);
+    }
+
+    public void removeTransaction(Transaction transaction){
+        transactions.remove(transaction);
     }
 
     public int getId() {
@@ -43,5 +63,16 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Account account)) return false;
+        return id == account.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
