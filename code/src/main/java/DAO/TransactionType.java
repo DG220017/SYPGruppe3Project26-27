@@ -1,11 +1,13 @@
 package DAO;
 
 public enum TransactionType {
+    GEHALT,
     WOHNEN,
     ESSEN_TRINKEN,
-    MOBILITAET,
+    MOBILITÄT,
     FREIZEIT,
-    GEHALT,
     HOBBY,
-    SONSTIGES,
+    SHOPPING,
+    BILLS,
+    NEBENEINKOMMEN
 }
