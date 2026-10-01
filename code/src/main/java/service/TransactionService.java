@@ -22,20 +22,18 @@ public class TransactionService {
     public void getTransactionsInTimespan(LocalDate from, LocalDate to){}
 
     public Transaction addTransaction(Transaction transaction){
-
-        return null;
+        return transactionRepository.save(transaction);
     }
 
-    public Transaction removeTransaction(Transaction transaction){
-
-        return null;
+    public void removeTransaction(Transaction transaction){
+        transactionRepository.delete(transaction);
     }
 
     public Transaction getTransactionByName(String name){
-        return null;
+        return transactionRepository.findByName(name);
     }
 
     public List<Transaction> getTransactionsAllByType(TransactionType type){
-        return null;
+        return transactionRepository.findAllByTransactionType(type);
     }
 }
