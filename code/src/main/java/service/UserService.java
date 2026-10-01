@@ -1,5 +1,6 @@
 package service;
 
+import entity.Account;
 import entity.User;
 import repository.UserRepository;
 
@@ -17,5 +18,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    
+    public User removeUser(User user){
+        userRepository.delete(user);
+        return user;
+    }
+
+
+
+
 }
