@@ -26,5 +26,5 @@ public enum TransactionType {
         this.id = id;
         this.type = type;
     }
-    
+
 }
