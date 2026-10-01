@@ -1,16 +1,28 @@
 # SYPGruppe3Project26-27
+
+## Mitglieder
++ Niklas Abl
++ Pascal Schnedl
++ David Gasparin
++ Martin Knöbelreiter
++ Christian Zaloznik
++ Denise Reinthaler
++ Philip Hammer
+
 ## Ideen
-+ 2D Game mit scores 3Stimmen 
-+ Workoutplanner mit streak
-+ Habittracker mit streak 1Stimme
++ 2D-Game mit Score – 3 Stimmen
++ Workoutplaner mit Streak
++ Habit-Tracker mit Streak – 1 Stimme
 + Kalorientracker
-+ Ausgabentracker (Finanzen) 3Stimmen 
-+ Routenplaner Fahrtentracker für Arbeitsspritbezahlung 
++ Ausgabentracker (Finanzen) – 3 Stimmen
++ Routenplaner / Fahrtentracker für Arbeitsspritbezahlung
 
-*Das Glücksrad hat entscheiden:*
-Ausgabentracker (Finanzen) 
+**Das Glücksrad hat entschieden:**  
+Ausgabentracker (Finanzen)
 
-## Ausgabentracker (Finanzen) MVP
-+ Eine minimales GUI in dem man seine Einnahmen/Ausgaben einsehen kann
-+ Eine Erstversion einer Datenbank
-+ Die Funktion ein payment einzutragen und wieder zu löschen
+## Ausgabentracker (Finanzen) – MVP
++ Eine minimale GUI, in der man seine Einnahmen und Ausgaben einsehen kann
++ Eine erste Version einer Datenbank
++ Die Funktion, eine Zahlung einzutragen und wieder zu löschen
+
+Einzelne Planungsschritte sind in Mendix etwas näher ausgeführt.
