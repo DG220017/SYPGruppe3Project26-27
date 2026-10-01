@@ -23,9 +23,7 @@ public class UserService {
         return user;
     }
 
-    public List<Account> getAccounts(){
-        
-    }
+
 
 
 }

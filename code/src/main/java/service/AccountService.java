@@ -1,9 +1,11 @@
 package service;
 
 import entity.Account;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import repository.AccountRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,5 +28,15 @@ public class AccountService {
     public Account removeAccount(Account account) {
         accountRepository.delete(account);
         return account;
+    }
+
+    public List<Account> getAccountsFromUser(User user){
+        List<Account> accounts = new ArrayList<>();
+        for(long key : user.getA){
+            accounts.add(accountRepository.getById(key));
+        }
+
+        return  accounts;
+
     }
 }
