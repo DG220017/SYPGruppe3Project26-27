@@ -6,6 +6,7 @@ import repository.TransactionRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class TransactionService {
 
@@ -25,16 +26,12 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public void removeTransaction(Transaction transaction){
-        transactionRepository.delete(transaction);
-    }
-
-    public Transaction deleTransaction(Transaction transaction){
+    public Transaction removeTransaction(Transaction transaction){
         transactionRepository.delete(transaction);
         return transaction;
     }
 
-    public Transaction getTransactionById(long id){
+    public Optional<Transaction> getTransactionById(long id){
         return transactionRepository.findById(id);
     }
 

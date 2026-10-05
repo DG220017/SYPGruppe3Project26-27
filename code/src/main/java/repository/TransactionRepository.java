@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
 
     Transaction findById(long id);
