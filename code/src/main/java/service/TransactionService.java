@@ -26,11 +26,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public void removeTransaction(Transaction transaction){
-        transactionRepository.delete(transaction);
-    }
-
-    public Transaction deleTransaction(Transaction transaction){
+    public Transaction removeTransaction(Transaction transaction){
         transactionRepository.delete(transaction);
         return transaction;
     }

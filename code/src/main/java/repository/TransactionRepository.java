@@ -7,8 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
+
+    Transaction findById(long id);
 
     Transaction findByName(String name);
 
