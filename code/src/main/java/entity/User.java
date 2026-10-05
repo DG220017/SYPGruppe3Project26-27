@@ -13,7 +13,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
     @OneToMany
     @JoinColumn(name = "account_id")
     private List<Account> accounts = new ArrayList<>();
