@@ -1,7 +1,11 @@
 package service;
 
+import DAO.TransactionType;
 import entity.Transaction;
 import repository.TransactionRepository;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class TransactionService {
 
@@ -11,9 +15,18 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    public List<Transaction> getAllTransactions(){
+        return transactionRepository.findAll();
+    }
+
+    public void getTransactionsInTimespan(LocalDate from, LocalDate to){}
+
     public Transaction addTransaction(Transaction transaction){
-        transactionRepository.save(transaction);
-        return transaction;
+        return transactionRepository.save(transaction);
+    }
+
+    public void removeTransaction(Transaction transaction){
+        transactionRepository.delete(transaction);
     }
 
     public Transaction deleTransaction(Transaction transaction){
@@ -23,6 +36,14 @@ public class TransactionService {
 
     public Transaction getTransactionById(long id){
         return transactionRepository.findById(id);
+    }
+
+    public Transaction getTransactionByName(String name){
+        return transactionRepository.findByName(name);
+    }
+
+    public List<Transaction> getTransactionsAllByType(TransactionType type){
+        return transactionRepository.findAllByTransactionType(type);
     }
 
 }
