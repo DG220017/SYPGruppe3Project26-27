@@ -35,17 +35,17 @@ public class TransactionController {
         transactionService.removeTransaction(transaction);
     }
 
-    @GetMapping("/findbyName")
+    @GetMapping("/findTransactionbyName")
     public Transaction getTransactionByName(@PathVariable String name){
         return transactionService.getTransactionByName(name);
     }
 
-    @GetMapping("/findbyID")
+    @GetMapping("/findTransactionbyID")
     public Transaction getTransactionById(@PathVariable Long id){
        return transactionService.getTransactionById(id);
     }
 
-    @GetMapping("findAllbyType")
+    @GetMapping("findAllTransactionsbyType")
     public List<Transaction> getAllTransactionsByType(@PathVariable TransactionType type){
         return transactionService.getTransactionsAllByType(type);
     }
