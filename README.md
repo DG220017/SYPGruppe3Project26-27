@@ -30,26 +30,25 @@ Einzelne Planungsschritte sind in Mendix etwas näher ausgeführt.
 ## Geplante Schnittstellen
 
 ### Service-Schicht
- + User Service
-  getAllUsers()
-  addUser(User user)
-  removeUser(User user)
-  getAccounts()
-  
-  
 
- + Transaction-Service
-  getAllTransactions()
-  getTransactionsInTimespan(Localdate from, LocalDate to)
-  addTransaction(Transaction transaction)
-  removeTrnsaction(Transaction transaction)
-  getTransactionByName(String name)
-  getTransactionsAllByType(TransactionType type)
+#### User Service
+- getAllUsers()
+- addUser(User user)
+- removeUser(User user)
+- getUserById(long id)
+- getUserByEmail(String email)
 
-   
- + Account-Service
-  getAllAccounts()
-  addAccount(Account account)
-  removeAccount(Account account)
-  
+#### Transaction-Service
+- getAllTransactions()
+- getTransactionsInTimespan(LocalDate from, LocalDate to)
+- addTransaction(Transaction transaction)
+- removeTransaction(Transaction transaction)
+- getTransactionById(long id)
+- getTransactionByName(String name)
+- getTransactionsAllByType(TransactionType type)
 
+#### Account-Service
+- getAllAccounts()
+- addAccount(Account account)
+- removeAccount(Account account)
+- getAccountById(long id)
