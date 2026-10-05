@@ -7,6 +7,7 @@ import repository.AccountRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -30,5 +31,7 @@ public class AccountService {
         return account;
     }
 
-    public Account getBy
+    public Optional<Account> getAccountById(long id){
+        return accountRepository.findById(id);
+    }
 }
