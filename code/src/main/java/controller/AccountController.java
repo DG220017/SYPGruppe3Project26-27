@@ -31,7 +31,7 @@ public class AccountController {
         return accountService.removeAccount(account);
     }
 
-    @GetMapping
+    @GetMapping("/getAccountbyId")
     public Optional<Account> getAccountById(@RequestParam long id){
         return accountService.getAccountById(id);
     }
