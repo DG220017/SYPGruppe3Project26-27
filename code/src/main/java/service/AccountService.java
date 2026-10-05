@@ -30,13 +30,4 @@ public class AccountService {
         return account;
     }
 
-    public List<Account> getAccountsFromUser(User user){
-        List<Account> accounts = new ArrayList<>();
-        for(long key : user.getA){
-            accounts.add(accountRepository.getById(key));
-        }
-
-        return  accounts;
-
-    }
 }

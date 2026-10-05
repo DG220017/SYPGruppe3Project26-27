@@ -5,6 +5,7 @@ import entity.User;
 import repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserService {
 
@@ -21,6 +22,10 @@ public class UserService {
     public User removeUser(User user){
         userRepository.delete(user);
         return user;
+    }
+
+    public Optional<User> getUserById(long id){
+        return userRepository.findById(id);
     }
 
 

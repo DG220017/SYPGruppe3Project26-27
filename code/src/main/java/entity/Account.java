@@ -12,7 +12,7 @@ public class Account {
 
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
 
     @OneToMany
     @JoinColumn(name = "transactions_id")
@@ -22,9 +22,17 @@ public class Account {
 
     private double balance;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     public Account() {
 
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public Account(int id, String username, double balance) {
@@ -45,7 +53,7 @@ public class Account {
         transactions.remove(transaction);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
