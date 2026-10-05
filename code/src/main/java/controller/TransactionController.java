@@ -16,8 +16,6 @@ import java.util.Optional;
 public class TransactionController {
 
     private final TransactionService transactionService;
-
-    public static final Logger log = LoggerFactory.getLogger(TransactionController.class);
     
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
