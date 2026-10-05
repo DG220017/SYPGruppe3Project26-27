@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class PocketUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class User {
         return accounts;
     }
 
-    public User() {
+    public PocketUser() {
 
     }
 
@@ -38,7 +38,7 @@ public class User {
     }
 
 
-    public User(int id, String password, String email) {
+    public PocketUser(int id, String password, String email) {
         this.id = id;
         this.password = password;
         this.email = email;
@@ -66,8 +66,8 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof User user)) return false;
-        return id == user.id;
+        if (!(o instanceof PocketUser pocketUser)) return false;
+        return id == pocketUser.id;
     }
 
     @Override

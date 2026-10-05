@@ -1,7 +1,6 @@
 package service;
 
-import entity.Account;
-import entity.User;
+import entity.PocketUser;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
@@ -17,25 +16,25 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getAllUsers(){
+    public List<PocketUser> getAllUsers(){
         return userRepository.findAll();
     }
 
-    public User removeUser(User user){
-        userRepository.delete(user);
-        return user;
+    public PocketUser removeUser(PocketUser pocketUser){
+        userRepository.delete(pocketUser);
+        return pocketUser;
     }
 
-    public Optional<User> getUserById(long id){
+    public Optional<PocketUser> getUserById(long id){
         return userRepository.findById(id);
     }
 
-    public User addUser(User user){
-        userRepository.save(user);
-        return user;
+    public PocketUser addUser(PocketUser pocketUser){
+        userRepository.save(pocketUser);
+        return pocketUser;
     }
 
-    public User getUserByEmail(String email){
+    public PocketUser getUserByEmail(String email){
         return userRepository.findUserByEmail(email);
     }
 

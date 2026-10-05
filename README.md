@@ -33,8 +33,8 @@ Einzelne Planungsschritte sind in Mendix etwas näher ausgeführt.
 
 #### User Service
 - getAllUsers()
-- addUser(User user)
-- removeUser(User user)
+- addUser(User pocketUser)
+- removeUser(User pocketUser)
 - getUserById(long id)
 - getUserByEmail(String email)
 

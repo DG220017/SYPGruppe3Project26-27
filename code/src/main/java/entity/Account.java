@@ -24,15 +24,15 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private PocketUser pocketUser;
 
 
     public Account() {
 
     }
 
-    public User getUser() {
-        return user;
+    public PocketUser getUser() {
+        return pocketUser;
     }
 
     public Account(int id, String username, double balance) {

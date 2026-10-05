@@ -1,14 +1,13 @@
 package repository;
 
-import entity.User;
+import entity.PocketUser;
 
-import org.hibernate.internal.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<PocketUser, Long> {
 
-    User findUserByEmail(String name);
+    PocketUser findUserByEmail(String name);
 
 }

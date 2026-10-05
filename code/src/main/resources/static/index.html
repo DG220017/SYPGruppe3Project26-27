@@ -456,7 +456,7 @@
             padding-top: 16px;
         }
 
-        .user-info {
+        .pocketUser-info {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -465,7 +465,7 @@
             padding: 8px 12px;
         }
 
-        .user-avatar {
+        .pocketUser-avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -867,11 +867,11 @@
             </ul>
 
             <div class="sidebar-bottom">
-                <div class="user-info">
-                    <div class="user-avatar" id="user-avatar-initial">D</div>
+                <div class="pocketUser-info">
+                    <div class="pocketUser-avatar" id="pocketUser-avatar-initial">D</div>
                     <div>
-                        <div style="font-weight:700;" id="user-display-name">Demo User</div>
-                        <div style="font-size:11px; color:var(--text-sidebar);" id="user-display-email">demo@pocket.app</div>
+                        <div style="font-weight:700;" id="pocketUser-display-name">Demo User</div>
+                        <div style="font-size:11px; color:var(--text-sidebar);" id="pocketUser-display-email">demo@pocket.app</div>
                     </div>
                 </div>
             </div>
@@ -1257,7 +1257,7 @@
            2. CENTRAL STATE ARCHITECTURE
            ========================================================================== */
         const PocketState = {
-            user: null,
+            pocketUser: null,
             theme: "light",
             transactions: [],
             categories: [...DEMO_CATEGORIES],
@@ -1331,9 +1331,9 @@
             const savedUser = localStorage.getItem(STORAGE_KEYS.AUTH);
             if (savedUser) {
                 try {
-                    PocketState.user = JSON.parse(savedUser);
+                    PocketState.pocketUser = JSON.parse(savedUser);
                 } catch(e) {
-                    PocketState.user = null;
+                    PocketState.pocketUser = null;
                 }
             }
         }
@@ -1359,7 +1359,7 @@
             if (select) select.value = themeName;
 
             // Re-render charts for theme colors
-            if (PocketState.user) {
+            if (PocketState.pocketUser) {
                 renderCharts();
             }
         }
@@ -1374,7 +1374,7 @@
            6. AUTHENTICATION MANAGER
            ========================================================================== */
         function initAuth() {
-            if (PocketState.user) {
+            if (PocketState.pocketUser) {
                 showAppScreen();
             } else {
                 showLoginScreen();
@@ -1390,7 +1390,7 @@
             if (email === "demo@pocket.app" && password === "demo123") {
                 errorBanner.style.display = "none";
                 const userObj = { email, name: "Demo User" };
-                PocketState.user = userObj;
+                PocketState.pocketUser = userObj;
                 localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(userObj));
                 showAppScreen();
             } else {
@@ -1399,7 +1399,7 @@
         }
 
         function handleLogout() {
-            PocketState.user = null;
+            PocketState.pocketUser = null;
             localStorage.removeItem(STORAGE_KEYS.AUTH);
             showLoginScreen();
         }
@@ -1413,10 +1413,10 @@
             $("login-screen").classList.add("hidden");
             $("app-screen").classList.remove("hidden");
 
-            if (PocketState.user) {
-                $("user-display-name").textContent = PocketState.user.name;
-                $("user-display-email").textContent = PocketState.user.email;
-                $("user-avatar-initial").textContent = PocketState.user.name.charAt(0);
+            if (PocketState.pocketUser) {
+                $("pocketUser-display-name").textContent = PocketState.pocketUser.name;
+                $("pocketUser-display-email").textContent = PocketState.pocketUser.email;
+                $("pocketUser-avatar-initial").textContent = PocketState.pocketUser.name.charAt(0);
             }
 
             navigate("dashboard");

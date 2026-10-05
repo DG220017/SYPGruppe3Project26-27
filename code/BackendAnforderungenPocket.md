@@ -115,7 +115,7 @@ Alle geschützten Endpunkte benötigen gültige Authentifizierung. JSON-Requests
 
 Login Request:
 ```json
-{ "email": "user@example.com", "password": "secret" }
+{ "email": "pocketUser@example.com", "password": "secret" }
 ```
 Login Response (JWT-Variante):
 ```json
@@ -123,7 +123,7 @@ Login Response (JWT-Variante):
   "accessToken": "<jwt>",
   "tokenType": "Bearer",
   "expiresIn": 3600,
-  "user": { "id": "uuid", "name": "Demo User", "email": "user@example.com" }
+  "pocketUser": { "id": "uuid", "name": "Demo User", "email": "pocketUser@example.com" }
 }
 ```
 
