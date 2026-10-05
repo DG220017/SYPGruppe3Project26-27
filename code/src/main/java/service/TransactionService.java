@@ -2,11 +2,13 @@ package service;
 
 import DAO.TransactionType;
 import entity.Transaction;
+import org.springframework.stereotype.Service;
 import repository.TransactionRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Service
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;

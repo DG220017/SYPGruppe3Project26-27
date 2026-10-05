@@ -7,6 +7,7 @@ import service.AccountService;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
 public class AccountController {
 
     private AccountService accountService;
