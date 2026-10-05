@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import service.TransactionService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/transactions")
