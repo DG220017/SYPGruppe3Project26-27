@@ -5,7 +5,6 @@ import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import repository.AccountRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

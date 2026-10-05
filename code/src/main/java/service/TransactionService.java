@@ -6,7 +6,6 @@ import repository.TransactionRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionService {
 
@@ -31,7 +30,7 @@ public class TransactionService {
         return transaction;
     }
 
-    public Optional<Transaction> getTransactionById(long id){
+    public Transaction getTransactionById(long id){
         return transactionRepository.findById(id);
     }
 
