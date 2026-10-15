@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocket · Dein Geld. Dein Überblick.</title>
+  <style>
+    /* Die Farben eines Designs werden zentral festgelegt. */
+    :root {
+      --bg: #f4f5f9; --surface: #ffffff; --text: #202237; --muted: #686b80;
+      --line: #e5e6ef; --accent: #6650dc; --soft: #efecff; --green: #187752;
+      --red: #bd3956; --sidebar: #ffffff; --hero: #282344; --hero-end: #494072;
+    }
+    [data-theme="dark"] {
+      --bg: #18191e; --surface: #23242c; --text: #f3f3fa; --muted: #b2b3c4;
+      --line: #393a47; --accent: #b9a9ff; --soft: #38304f; --green: #70d8ae;
+      --red: #ff9eb0; --sidebar: #202127; --hero: #322a51; --hero-end: #4d3b73;
+    }
+    [data-theme="midnight"] {
+      --bg: #0c1224; --surface: #151e36; --text: #edf1ff; --muted: #a3afcc;
+      --line: #2c3753; --accent: #a8b7ff; --soft: #283355; --green: #6edbc0;
+      --red: #ff9faf; --sidebar: #10182b; --hero: #20294f; --hero-end: #3a4079;
+    }
+    [data-theme="ocean"] {
+      --bg: #edf6f8; --surface: #ffffff; --text: #193e50; --muted: #527181;
+      --line: #d5e6ec; --accent: #087d96; --soft: #e1f3f7; --green: #157653;
+      --red: #b83454; --sidebar: #f8fdff; --hero: #123e52; --hero-end: #197e94;
+    }
+    [data-theme="forest"] {
+      --bg: #f0f4ef; --surface: #ffffff; --text: #243d32; --muted: #5d7566;
+      --line: #dce6dd; --accent: #337453; --soft: #e5f1e7; --green: #267349;
+      --red: #b93650; --sidebar: #fafdf9; --hero: #1c3b30; --hero-end: #476b48;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Arial, sans-serif; font-size: 14px; }
+    button, input, select { font: inherit; }
+    button, select { cursor: pointer; }
+    button, input, select { border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; background: var(--surface); color: var(--text); }
+    button:hover { border-color: var(--accent); }
+    button:disabled { opacity: .5; cursor: wait; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: 32px; letter-spacing: -1.3px; margin-bottom: 10px; }
+    h2 { font-size: 18px; letter-spacing: -.4px; }
+    p { line-height: 1.6; }
+    .muted { color: var(--muted); }
+    .eyebrow { font-size: 11px; font-weight: bold; letter-spacing: 1.7px; text-transform: uppercase; }
+    .app { display: flex; min-height: 100vh; }
+    aside { width: 235px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--line); padding: 35px 22px; display: flex; flex-direction: column; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 27px; font-weight: bold; letter-spacing: -1px; }
+    .logo { width: 40px; height: 43px; border-radius: 12px 12px 18px 18px; background: var(--accent); position: relative; flex-shrink: 0; }
+    .logo::after { content: ''; position: absolute; left: 9px; right: 9px; top: 12px; height: 14px; border: 2px solid var(--surface); border-top: 0; border-radius: 0 0 12px 12px; transform: rotate(-8deg); }
+    .brand-note { font-size: 11px; margin: 13px 0 47px; }
+    nav { display: grid; gap: 9px; }
+    nav button { display: flex; align-items: center; gap: 13px; border-color: transparent; background: transparent; text-align: left; font-weight: bold; padding: 14px; }
+    nav button.active { background: var(--soft); color: var(--accent); }
+    .nav-icon { font-size: 19px; width: 23px; text-align: center; }
+    .side-bottom { margin-top: auto; padding-top: 55px; }
+    .side-card { border: 1px solid var(--line); border-radius: 14px; padding: 17px; }
+    .side-card p { font-size: 12px; margin-bottom: 0; }
+    main { max-width: 1500px; width: 100%; padding: 27px 40px 24px; min-width: 0; margin: auto; }
+    .topbar { display: flex; justify-content: space-between; gap: 18px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 30px; }
+    .preferences { display: flex; gap: 13px; flex-wrap: wrap; }
+    .preferences label { font-size: 11px; color: var(--muted); display: flex; gap: 7px; align-items: center; }
+    .preferences select { font-size: 12px; padding: 9px; }
+    .badge { display: inline-flex; align-items: center; gap: 7px; border-radius: 30px; background: var(--soft); color: var(--accent); padding: 7px 11px; font-size: 11px; font-weight: bold; }
+    .dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+    .heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 25px; }
+    .heading p { margin-bottom: 0; }
+    .primary { background: var(--accent); color: var(--surface); border-color: var(--accent); font-weight: bold; }
+    .overview { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 18px; margin-bottom: 25px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+    .balance { position: relative; overflow: hidden; background: linear-gradient(120deg, var(--hero), var(--hero-end)); color: #fff; border: 0; min-height: 200px; }
+    .balance::after { content: ''; position: absolute; width: 175px; height: 175px; border: 32px solid #ffffff09; border-radius: 50%; right: -65px; bottom: -80px; pointer-events: none; }
+    .balance .muted { color: #d6d2e5; }
+    .amount { font-size: clamp(24px, 2.6vw, 38px); font-weight: bold; letter-spacing: -1.4px; display: block; margin: 22px 0 17px; overflow-wrap: anywhere; }
+    .stat-icon { display: inline-grid; place-items: center; height: 33px; width: 33px; border-radius: 10px; background: var(--soft); margin-right: 8px; font-size: 19px; }
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .columns { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(250px, 1fr); gap: 22px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .section-head h2 { margin-bottom: 0; }
+    .link { color: var(--accent); border: 0; background: none; padding: 6px; font-size: 12px; font-weight: bold; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; text-align: left; white-space: nowrap; }
+    th { font-size: 11px; color: var(--muted); font-weight: normal; padding: 10px 12px 14px; }
+    td { border-top: 1px solid var(--line); padding: 17px 12px; font-size: 13px; }
+    th:first-child, td:first-child { padding-left: 0; }
+    th:last-child, td:last-child { text-align: right; padding-right: 0; }
+    td strong { display: block; font-size: 13px; margin-bottom: 4px; }
+    .account { display: flex; justify-content: space-between; gap: 12px; padding: 19px 0; border-bottom: 1px solid var(--line); }
+    .account:last-child { border-bottom: 0; }
+    .account-name { display: flex; align-items: center; gap: 11px; }
+    .account-icon { display: grid; place-items: center; width: 37px; height: 37px; border-radius: 12px; background: var(--soft); color: var(--accent); }
+    .account small { display: block; color: var(--muted); margin-top: 5px; }
+    .mini-note { padding-top: 20px; margin-top: 17px; border-top: 1px solid var(--line); font-size: 12px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+    .toolbar label { display: grid; gap: 7px; font-size: 12px; color: var(--muted); }
+    .toolbar .search-label { flex: 1; min-width: 160px; }
+    .delete { color: var(--red); font-size: 12px; padding: 7px 10px; }
+    .empty { padding: 35px; text-align: center; color: var(--muted); }
+    footer { display: flex; justify-content: space-between; gap: 15px; font-size: 11px; color: var(--muted); margin-top: 30px; }
+    #notice { color: var(--text); padding: 12px 16px; border: 1px solid var(--accent); border-radius: 10px; margin-bottom: 20px; background: var(--soft); }
+    dialog { width: min(460px, 92vw); max-height: 90vh; overflow: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); color: var(--text); padding: 28px; }
+    dialog::backdrop { background: #10132588; }
+    dialog label { display: grid; gap: 8px; margin-bottom: 17px; color: var(--muted); font-size: 13px; }
+    dialog input, dialog select { width: 100%; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+    @media (min-width: 1500px) { main { padding-top: 40px; padding-bottom: 40px; } }
+    @media (max-width: 1100px) { aside { width: 195px; padding: 27px 16px; } main { padding: 24px; } .overview { grid-template-columns: 1fr 1fr; } .balance { grid-column: 1 / -1; } .columns { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      .app { display: block; } aside { width: 100%; padding: 18px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { font-size: 24px; } .brand-note, .side-bottom, .nav-icon { display: none; }
+      nav { display: flex; overflow-x: auto; gap: 3px; margin-top: 18px; } nav button { padding: 11px; font-size: 12px; }
+      main { padding: 20px 16px; } .topbar { align-items: flex-start; flex-direction: column; gap: 14px; }
+      .preferences { gap: 9px; } .preferences label { display: grid; } .heading { align-items: flex-start; flex-direction: column; }
+      h1 { font-size: 28px; } .overview { gap: 10px; } .card { padding: 18px; } .amount { font-size: 25px; }
+      .stat-icon { display: none; } footer { flex-direction: column; } .section-head { gap: 6px; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+<div class="app">
+  <aside>
+    <div class="brand"><span class="logo" aria-hidden="true"></span>Pocket<span style="color:var(--accent)">.</span></div>
+    <p class="brand-note muted" data-i18n="tagline"></p>
+    <nav aria-label="Navigation">
+      <button class="active" data-page="dashboard" onclick="showPage('dashboard')"><span class="nav-icon" aria-hidden="true">▦</span><span data-i18n="dashboard"></span></button>
+      <button data-page="accounts" onclick="showPage('accounts')"><span class="nav-icon" aria-hidden="true">▣</span><span data-i18n="accounts"></span></button>
+      <button data-page="transactions" onclick="showPage('transactions')"><span class="nav-icon" aria-hidden="true">⇄</span><span data-i18n="transactions"></span></button>
+      <button data-page="users" onclick="showPage('users')"><span class="nav-icon" aria-hidden="true">♙</span><span data-i18n="users"></span></button>
+    </nav>
+    <div class="side-bottom"><div class="side-card"><span class="eyebrow" data-i18n="little"></span><p class="muted" data-i18n="sideText"></p></div></div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <span class="eyebrow muted" data-i18n="workspace"></span>
+      <div class="preferences">
+        <label><span data-i18n="language"></span><select id="language" onchange="setLanguage(this.value)"><option value="de">Deutsch</option><option value="en">English</option><option value="es">Español</option><option value="sv">Svenska</option><option value="fr">Français</option></select></label>
+        <label><span data-i18n="design"></span><select id="theme" onchange="setTheme(this.value)"><option value="light">Light</option><option value="dark">Dark</option><option value="midnight">Midnight</option><option value="ocean">Ocean</option><option value="forest">Forest</option></select></label>
+      </div>
+    </header>
+    <div id="notice" role="status" hidden></div>
+    <div class="heading">
+      <div><h1 id="pageTitle"></h1><p class="muted" id="pageSubtitle"></p></div>
+      <button class="primary" id="addButton" onclick="openForm()"></button>
+    </div>
+    <section id="dashboard">
+      <div class="overview">
+        <article class="card balance"><span class="eyebrow" data-i18n="balance"></span><strong class="amount" id="totalBalance"></strong><span class="muted" data-i18n="allAccounts"></span></article>
+        <article class="card"><span class="stat-icon positive" aria-hidden="true">↙</span><span class="muted" data-i18n="income"></span><strong class="amount positive" id="totalIncome"></strong><small class="muted" data-i18n="allEntries"></small></article>
+        <article class="card"><span class="stat-icon negative" aria-hidden="true">↗</span><span class="muted" data-i18n="expenses"></span><strong class="amount negative" id="totalExpenses"></strong><small class="muted" data-i18n="allEntries"></small></article>
+      </div>
+      <div class="columns">
+        <article class="card"><div class="section-head"><h2 data-i18n="recent"></h2><button class="link" onclick="showPage('transactions')" data-i18n="viewAll"></button></div><div class="table-wrap" id="recentTable"></div></article>
+        <article class="card"><div class="section-head"><h2 data-i18n="yourAccounts"></h2><button class="link" onclick="showPage('accounts')" data-i18n="manage"></button></div><div id="accountCards"></div></article>
+      </div>
+    </section>
+    <section id="management" class="card" hidden>
+      <div class="toolbar">
+        <label class="search-label"><span data-i18n="search"></span><input id="search" type="search" onkeydown="if(event.key === 'Enter') searchBackend()"></label>
+        <label><span data-i18n="searchBy"></span><select id="searchKey"></select></label>
+        <button onclick="searchBackend()" data-i18n="searchButton" style="align-self:end"></button>
+        <label id="typeLabel"><span data-i18n="type"></span><select id="typeFilter" onchange="searchBackend(true)"><option value="" data-i18n="all"></option><option value="INCOME" data-i18n="income"></option><option value="EXPENSE" data-i18n="expenses"></option></select></label>
+        <button onclick="loadData()" data-i18n="reload" style="align-self:end"></button>
+      </div>
+      <div class="table-wrap" id="mainTable"></div>
+    </section>
+    <footer><span class="badge"><span class="dot"></span><span id="modeLabel"></span></span><span id="modeNote"></span></footer>
+  </main>
+</div>
+<dialog id="entryDialog" aria-labelledby="formTitle">
+  <form id="entryForm" onsubmit="saveEntry(event)">
+    <h2 id="formTitle"></h2>
+    <label><span data-i18n="name"></span><input id="entryName" required maxlength="80"></label>
+    <label id="emailLabel"><span data-i18n="email"></span><input id="entryEmail" type="email" maxlength="120"></label>
+    <label id="amountLabel"><span id="amountCaption"></span><input id="entryAmount" type="number" step="0.01" max="999999999" min="-999999999"></label>
+    <label id="entryTypeLabel"><span data-i18n="type"></span><select id="entryType"><option value="INCOME" data-i18n="income"></option><option value="EXPENSE" data-i18n="expenses"></option></select></label>
+    <p class="muted" id="formHint"></p>
+    <div class="form-actions"><button type="button" onclick="document.getElementById('entryDialog').close()" data-i18n="cancel"></button><button id="saveButton" class="primary" type="submit" data-i18n="save"></button></div>
+  </form>
+</dialog>
+<script>
+  const API_BASE = '';
+  const endpoints = {
+    accounts: { list: '/', add: '/addAccount', remove: '/removeAccount' },
+    transactions: { list: '/api/transactions', add: '/api/transactions/addTransaction', remove: '/api/transactions/removeTransaction' },
+    users: { list: '/api/users', add: '/api/users/addUser', remove: '/api/users/removeUser' }
+  };
+
+  // Diese Feldnamen sind Annahmen, weil die Entity-Klassen nicht mitgeliefert wurden.
+  let data = { accounts: [], transactions: [], users: [] };
+  let filteredRows = null;
+  let hasLoaded = false;
+  let page = 'dashboard';
+  let formPage = 'transactions';
+  let language = 'de';
+  let busy = false;
+
+  const translations = {
+    de: {
+      searchBy: 'Suchfeld', searchButton: 'Suchen', refreshFailed: 'Daten konnten nach der Änderung nicht neu geladen werden. Bitte neu laden; die Änderung kann bereits gespeichert sein.',
+      tagline: 'Dein Geld. Dein Überblick.', dashboard: 'Übersicht', accounts: 'Konten', transactions: 'Transaktionen', users: 'Benutzer',
+      little: 'Klein. Klar. Pocket.', sideText: 'Mehr Überblick für alles, was dir wichtig ist.', workspace: 'Dein Finanzbereich', language: 'Sprache', design: 'Design',
+      welcome: 'Alles im Blick.', subtitle: 'Deine Finanzen, ein bisschen übersichtlicher.', accountSub: 'Ein Platz für alle deine Konten.', transactionSub: 'Was reinkommt. Was rausgeht.', userSub: 'Alle Benutzer an einem Ort.',
+      balance: 'Gesamtguthaben', allAccounts: 'Summe aller Kontostände · EUR', income: 'Einnahmen', expenses: 'Ausgaben', allEntries: 'Alle geladenen Transaktionen', recent: 'Letzte Einträge', viewAll: 'Alle ansehen →', yourAccounts: 'Deine Konten', manage: 'Verwalten →',
+      search: 'Suchwert', type: 'Typ', all: 'Alle Typen', reload: 'Neu laden',
+      name: 'Name', email: 'E-Mail', amount: 'Betrag', action: 'Aktion', id: 'ID', cancel: 'Abbrechen', save: 'Speichern', remove: 'Löschen',
+      addAccounts: '+ Konto', addTransactions: '+ Transaktion', addUsers: '+ Benutzer', empty: 'Keine Einträge gefunden.', live: 'Spring Boot',
+      liveNote: 'Daten aus deiner Spring-Boot-Anwendung.', confirm: 'Diesen Eintrag wirklich löschen?', saved: 'Eintrag gespeichert.', removed: 'Eintrag gelöscht.', loaded: 'Daten neu geladen.',
+      failed: 'Anfrage fehlgeschlagen. Server, Controller und Entity-Felder prüfen.', invalid: 'Bitte die Eingaben prüfen.', transactionHint: 'Positiven Betrag eingeben. Der Typ bestimmt Einnahme oder Ausgabe.', liveHint: 'Diese Änderung wird an Spring Boot gesendet.'
+    },
+    en: {
+      searchBy: 'Search field', searchButton: 'Search', refreshFailed: 'Data could not be reloaded after the change. Please reload; the change may already be saved.',
+      tagline: 'Your money. Your overview.', dashboard: 'Overview', accounts: 'Accounts', transactions: 'Transactions', users: 'Users',
+      little: 'Small. Clear. Pocket.', sideText: 'A clearer view of everything that matters to you.', workspace: 'Your money space', language: 'Language', design: 'Theme',
+      welcome: 'Your money, at a glance.', subtitle: 'A little more clarity for your finances.', accountSub: 'A place for all your accounts.', transactionSub: 'What comes in. What goes out.', userSub: 'All your users in one place.',
+      balance: 'Total balance', allAccounts: 'Sum of all account balances · EUR', income: 'Income', expenses: 'Expenses', allEntries: 'All loaded transactions', recent: 'Latest entries', viewAll: 'View all →', yourAccounts: 'Your accounts', manage: 'Manage →',
+      search: 'Search value', type: 'Type', all: 'All types', reload: 'Reload',
+      name: 'Name', email: 'Email', amount: 'Amount', action: 'Action', id: 'ID', cancel: 'Cancel', save: 'Save', remove: 'Delete',
+      addAccounts: '+ Account', addTransactions: '+ Transaction', addUsers: '+ User', empty: 'No entries found.', live: 'Spring Boot',
+      liveNote: 'Data from your Spring Boot application.', confirm: 'Really delete this entry?', saved: 'Entry saved.', removed: 'Entry deleted.', loaded: 'Data reloaded.',
+      failed: 'Request failed. Check the server, controllers and entity fields.', invalid: 'Please check your input.', transactionHint: 'Enter a positive amount. The type determines income or expense.', liveHint: 'This change will be sent to Spring Boot.'
+    },
+    es: {
+      searchBy: 'Campo de búsqueda', searchButton: 'Buscar', refreshFailed: 'No se pudieron recargar los datos tras el cambio. Recarga; el cambio puede haberse guardado.',
+      tagline: 'Tu dinero. Tu resumen.', dashboard: 'Resumen', accounts: 'Cuentas', transactions: 'Transacciones', users: 'Usuarios',
+      little: 'Simple. Claro. Pocket.', sideText: 'Una visión más clara de lo que te importa.', workspace: 'Tu espacio financiero', language: 'Idioma', design: 'Tema',
+      welcome: 'Todo de un vistazo.', subtitle: 'Un poco más de claridad para tus finanzas.', accountSub: 'Un lugar para todas tus cuentas.', transactionSub: 'Lo que entra. Lo que sale.', userSub: 'Todos los usuarios en un solo lugar.',
+      balance: 'Saldo total', allAccounts: 'Suma de los saldos de las cuentas · EUR', income: 'Ingresos', expenses: 'Gastos', allEntries: 'Todas las transacciones cargadas', recent: 'Últimos registros', viewAll: 'Ver todo →', yourAccounts: 'Tus cuentas', manage: 'Gestionar →',
+      search: 'Valor de búsqueda', type: 'Tipo', all: 'Todos los tipos', reload: 'Recargar',
+      name: 'Nombre', email: 'Correo electrónico', amount: 'Importe', action: 'Acción', id: 'ID', cancel: 'Cancelar', save: 'Guardar', remove: 'Eliminar',
+      addAccounts: '+ Cuenta', addTransactions: '+ Transacción', addUsers: '+ Usuario', empty: 'No se encontraron registros.', live: 'Spring Boot',
+      liveNote: 'Datos de tu aplicación Spring Boot.', confirm: '¿Eliminar este registro?', saved: 'Registro guardado.', removed: 'Registro eliminado.', loaded: 'Datos recargados.',
+      failed: 'Error en la solicitud. Revisa el servidor, los controladores y los campos de las entidades.', invalid: 'Revisa los datos introducidos.', transactionHint: 'Introduce un importe positivo. El tipo determina si es ingreso o gasto.', liveHint: 'Este cambio se enviará a Spring Boot.'
+    },
+    sv: {
+      searchBy: 'Sökfält', searchButton: 'Sök', refreshFailed: 'Data kunde inte laddas om efter ändringen. Ladda om; ändringen kan redan vara sparad.',
+      tagline: 'Dina pengar. Din överblick.', dashboard: 'Översikt', accounts: 'Konton', transactions: 'Transaktioner', users: 'Användare',
+      little: 'Litet. Tydligt. Pocket.', sideText: 'Bättre överblick över det som är viktigt för dig.', workspace: 'Din ekonomisida', language: 'Språk', design: 'Tema',
+      welcome: 'Allt på ett ställe.', subtitle: 'Lite bättre överblick över din ekonomi.', accountSub: 'En plats för alla dina konton.', transactionSub: 'Det som kommer in. Det som går ut.', userSub: 'Alla användare på ett ställe.',
+      balance: 'Totalt saldo', allAccounts: 'Summan av alla kontosaldon · EUR', income: 'Inkomster', expenses: 'Utgifter', allEntries: 'Alla inlästa transaktioner', recent: 'Senaste posterna', viewAll: 'Visa alla →', yourAccounts: 'Dina konton', manage: 'Hantera →',
+      search: 'Sökvärde', type: 'Typ', all: 'Alla typer', reload: 'Läs in igen',
+      name: 'Namn', email: 'E-post', amount: 'Belopp', action: 'Åtgärd', id: 'ID', cancel: 'Avbryt', save: 'Spara', remove: 'Radera',
+      addAccounts: '+ Konto', addTransactions: '+ Transaktion', addUsers: '+ Användare', empty: 'Inga poster hittades.', live: 'Spring Boot',
+      liveNote: 'Data från din Spring Boot-applikation.', confirm: 'Vill du verkligen radera posten?', saved: 'Posten har sparats.', removed: 'Posten har raderats.', loaded: 'Data har lästs in igen.',
+      failed: 'Begäran misslyckades. Kontrollera servern, kontrollerklasserna och entitetsfälten.', invalid: 'Kontrollera dina uppgifter.', transactionHint: 'Ange ett positivt belopp. Typen avgör om det är en inkomst eller utgift.', liveHint: 'Ändringen skickas till Spring Boot.'
+    },
+    fr: {
+      searchBy: 'Champ de recherche', searchButton: 'Rechercher', refreshFailed: 'Impossible de recharger les données après la modification. Rechargez ; elle est peut-être déjà enregistrée.',
+      tagline: 'Votre argent. Votre vue d’ensemble.', dashboard: 'Vue d’ensemble', accounts: 'Comptes', transactions: 'Transactions', users: 'Utilisateurs',
+      little: 'Simple. Clair. Pocket.', sideText: 'Une vue plus claire de ce qui compte pour vous.', workspace: 'Votre espace financier', language: 'Langue', design: 'Thème',
+      welcome: 'Tout en un coup d’œil.', subtitle: 'Un peu plus de clarté pour vos finances.', accountSub: 'Un espace pour tous vos comptes.', transactionSub: 'Ce qui entre. Ce qui sort.', userSub: 'Tous les utilisateurs au même endroit.',
+      balance: 'Solde total', allAccounts: 'Somme des soldes des comptes · EUR', income: 'Revenus', expenses: 'Dépenses', allEntries: 'Toutes les transactions chargées', recent: 'Dernières entrées', viewAll: 'Tout voir →', yourAccounts: 'Vos comptes', manage: 'Gérer →',
+      search: 'Valeur recherchée', type: 'Type', all: 'Tous les types', reload: 'Recharger',
+      name: 'Nom', email: 'E-mail', amount: 'Montant', action: 'Action', id: 'ID', cancel: 'Annuler', save: 'Enregistrer', remove: 'Supprimer',
+      addAccounts: '+ Compte', addTransactions: '+ Transaction', addUsers: '+ Utilisateur', empty: 'Aucune entrée trouvée.', live: 'Spring Boot',
+      liveNote: 'Données de votre application Spring Boot.', confirm: 'Voulez-vous supprimer cette entrée ?', saved: 'Entrée enregistrée.', removed: 'Entrée supprimée.', loaded: 'Données rechargées.',
+      failed: 'Échec de la requête. Vérifiez le serveur, les contrôleurs et les champs des entités.', invalid: 'Vérifiez les données saisies.', transactionHint: 'Saisissez un montant positif. Le type détermine un revenu ou une dépense.', liveHint: 'Ce changement sera envoyé à Spring Boot.'
+    }
+  };
+
+  function t(key) { return translations[language][key]; }
+  function money(value) { return new Intl.NumberFormat(language, { style: 'currency', currency: 'EUR' }).format(value); }
+
+  // Benutzereingaben dürfen nicht als HTML ausgeführt werden.
+  function escapeHtml(value) {
+    return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+  }
+
+  function setLanguage(value) {
+    language = value;
+    document.documentElement.lang = value;
+    document.title = 'Pocket · ' + t('tagline');
+    document.querySelectorAll('[data-i18n]').forEach(function(element) {
+      element.textContent = t(element.dataset.i18n);
+    });
+    document.getElementById('modeLabel').textContent = t('live');
+    document.getElementById('modeNote').textContent = t('liveNote');
+    document.getElementById('notice').hidden = true;
+    showPage(page);
+    remember('pocketLanguage', value);
+  }
+
+  function setTheme(value) {
+    document.body.dataset.theme = value;
+    remember('pocketTheme', value);
+  }
+
+  function remember(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) { /* Bei blockiertem Speicher bleibt die Oberfläche nutzbar. */ }
+  }
+
+  function addLabel(kind) {
+    if (kind === 'accounts') return t('addAccounts');
+    if (kind === 'users') return t('addUsers');
+    return t('addTransactions');
+  }
+
+  function showPage(value) {
+    page = value;
+    filteredRows = null;
+    document.querySelectorAll('[data-page]').forEach(function(button) {
+      button.classList.toggle('active', button.dataset.page === page);
+      if (button.dataset.page === page) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
+    const overview = page === 'dashboard';
+    document.getElementById('dashboard').hidden = !overview;
+    document.getElementById('management').hidden = overview;
+    document.getElementById('pageTitle').textContent = t(overview ? 'welcome' : page);
+    const subtitles = { dashboard: 'subtitle', accounts: 'accountSub', transactions: 'transactionSub', users: 'userSub' };
+    document.getElementById('pageSubtitle').textContent = t(subtitles[page]);
+    document.getElementById('addButton').textContent = addLabel(page);
+    document.getElementById('search').value = '';
+    document.getElementById('typeFilter').value = '';
+    document.getElementById('typeLabel').hidden = page !== 'transactions';
+    const keys = page === 'accounts' ? ['id'] : page === 'users' ? ['id', 'email'] : ['id', 'name'];
+    document.getElementById('searchKey').innerHTML = keys.map(function(key) { return '<option value="' + key + '">' + t(key) + '</option>'; }).join('');
+    render();
+  }
+
+  function render() {
+    let balance = 0, income = 0, expenses = 0;
+    data.accounts.forEach(function(account) { balance += Number(account.balance); });
+    data.transactions.forEach(function(transaction) {
+      if (transaction.type === 'INCOME') income += Number(transaction.amount);
+      if (transaction.type === 'EXPENSE') expenses += Number(transaction.amount);
+    });
+    document.getElementById('totalBalance').textContent = !hasLoaded ? '—' : money(balance);
+    document.getElementById('totalIncome').textContent = !hasLoaded ? '—' : money(income);
+    document.getElementById('totalExpenses').textContent = !hasLoaded ? '—' : money(expenses);
+    document.getElementById('recentTable').innerHTML = makeTable('transactions', data.transactions.slice(0, 5), false);
+    let cards = '';
+    data.accounts.forEach(function(account) {
+      cards += '<div class="account"><div class="account-name"><span class="account-icon" aria-hidden="true">▣</span><div><strong>' + escapeHtml(account.name) + '</strong><small>ID ' + escapeHtml(account.id) + '</small></div></div><strong>' + money(account.balance) + '</strong></div>';
+    });
+    document.getElementById('accountCards').innerHTML = cards || '<p class="empty">' + t('empty') + '</p>';
+    if (page !== 'dashboard') renderTable();
+  }
+
+  function renderTable() {
+    document.getElementById('mainTable').innerHTML = makeTable(page, filteredRows || data[page], true);
+  }
+
+  async function searchBackend(byType = false) {
+    if (busy || page === 'dashboard') return;
+    const kind = page;
+    const key = document.getElementById('searchKey').value;
+    const query = document.getElementById('search').value.trim();
+    const type = document.getElementById('typeFilter').value;
+    const searches = {
+      accounts: { id: '/getAccountbyId' },
+      transactions: { id: '/api/transactions/findTransactionbyID', name: '/api/transactions/findTransactionbyName' },
+      users: { id: '/api/users/findUserbyId', email: '/api/users/findUserbyEmail' }
+    };
+    let path = endpoints[kind].list;
+    if (byType && type) {
+      path = '/api/transactions/findAllTransactionsbyType?type=' + encodeURIComponent(type);
+      document.getElementById('search').value = '';
+    } else if (!byType && query) {
+      path = searches[kind][key] + '?' + key + '=' + encodeURIComponent(query);
+      document.getElementById('typeFilter').value = '';
+    }
+    setBusy(true);
+    try {
+      const result = await request(path);
+      const rows = result == null ? [] : Array.isArray(result) ? result : [result];
+      validateRows(kind, rows);
+      if (page === kind) { filteredRows = rows; renderTable(); }
+    } catch (error) { notify(t('failed') + ' ' + error.message); }
+    finally { setBusy(false); }
+  }
+
+  function makeTable(kind, rows, actions) {
+    if (rows.length === 0) return '<p class="empty">' + t('empty') + '</p>';
+    let html = '<table><thead><tr><th>' + t('name') + ' / ID</th>';
+    if (kind === 'transactions') html += '<th>' + t('type') + '</th>';
+    html += '<th>' + t(kind === 'users' ? 'email' : kind === 'accounts' ? 'balance' : 'amount') + '</th>';
+    if (actions) html += '<th>' + t('action') + '</th>';
+    html += '</tr></thead><tbody>';
+    rows.forEach(function(item) {
+      html += '<tr><td><strong>' + escapeHtml(item.name) + '</strong><small class="muted">#' + escapeHtml(item.id) + '</small></td>';
+      if (kind === 'transactions') {
+        const incoming = item.type === 'INCOME';
+        html += '<td><span class="badge">' + t(incoming ? 'income' : 'expenses') + '</span></td><td class="' + (incoming ? 'positive' : 'negative') + '">' + (incoming ? '+' : '−') + money(item.amount) + '</td>';
+      } else {
+        html += '<td>' + (kind === 'users' ? escapeHtml(item.email) : money(item.balance)) + '</td>';
+      }
+      if (actions) html += '<td><button class="delete" onclick="removeEntry(' + rows.indexOf(item) + ')" ' + (busy ? 'disabled' : '') + '>' + t('remove') + '</button></td>';
+      html += '</tr>';
+    });
+    return html + '</tbody></table>';
+  }
+
+  function openForm() {
+    formPage = page === 'dashboard' ? 'transactions' : page;
+    document.getElementById('entryForm').reset();
+    document.getElementById('formTitle').textContent = addLabel(formPage);
+    const user = formPage === 'users';
+    const transaction = formPage === 'transactions';
+    document.getElementById('emailLabel').hidden = !user;
+    document.getElementById('entryEmail').required = user;
+    document.getElementById('entryEmail').disabled = !user;
+    document.getElementById('amountLabel').hidden = user;
+    document.getElementById('entryAmount').required = !user;
+    document.getElementById('entryAmount').disabled = user;
+    document.getElementById('entryAmount').min = transaction ? '0.01' : '-999999999';
+    document.getElementById('amountCaption').textContent = t(transaction ? 'amount' : 'balance') + ' (EUR)';
+    document.getElementById('entryTypeLabel').hidden = !transaction;
+    document.getElementById('formHint').textContent = (transaction ? t('transactionHint') + ' ' : '') + t('liveHint');
+    document.getElementById('entryDialog').showModal();
+  }
+
+  function setBusy(value) {
+    busy = value;
+    document.getElementById('saveButton').disabled = value;
+    document.getElementById('addButton').disabled = value;
+    document.querySelectorAll('.delete').forEach(function(button) { button.disabled = value; });
+  }
+
+  async function saveEntry(event) {
+    event.preventDefault();
+    if (busy) return;
+    const item = { name: document.getElementById('entryName').value.trim() };
+    if (!item.name) { document.getElementById('entryName').focus(); return; }
+    if (formPage === 'users') item.email = document.getElementById('entryEmail').value.trim();
+    if (formPage === 'accounts') item.balance = Number(document.getElementById('entryAmount').value);
+    if (formPage === 'transactions') {
+      item.amount = Number(document.getElementById('entryAmount').value);
+      item.type = document.getElementById('entryType').value;
+    }
+    setBusy(true);
+    try {
+      await request(endpoints[formPage].add, 'POST', item);
+      document.getElementById('entryDialog').close();
+      try { await refreshData(); notify(t('saved')); }
+      catch (error) { notify(t('refreshFailed') + ' ' + error.message); }
+    } catch (error) {
+      document.getElementById('entryDialog').close();
+      notify(t('failed') + ' ' + error.message);
+    } finally { setBusy(false); }
+  }
+
+  async function removeEntry(index) {
+    if (busy || !confirm(t('confirm'))) return;
+    const kind = page;
+    const item = (filteredRows || data[kind])[index];
+    setBusy(true);
+    try {
+      await request(endpoints[kind].remove, 'DELETE', item);
+      try { await refreshData(); notify(t('removed')); }
+      catch (error) { notify(t('refreshFailed') + ' ' + error.message); }
+    } catch (error) { notify(t('failed') + ' ' + error.message); }
+    finally { setBusy(false); }
+  }
+
+  // fetch sendet JSON an die vorhandenen Spring-Boot-Adressen.
+  async function request(path, method = 'GET', body = null) {
+    const options = { method: method, headers: { 'Accept': 'application/json' } };
+    if (body !== null) {
+      options.headers['Content-Type'] = 'application/json';
+      options.body = JSON.stringify(body);
+    }
+    const response = await fetch(API_BASE + path, options);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    if (method !== 'GET') return null;
+    const text = await response.text();
+    return text.trim() ? JSON.parse(text) : null;
+  }
+
+  function validateRows(kind, rows) {
+    if (!Array.isArray(rows)) throw new Error('JSON: ' + kind);
+    rows.forEach(function(row) {
+      if (!row || row.id == null || typeof row.name !== 'string') throw new Error('JSON: id / name');
+      if (kind === 'users' && typeof row.email !== 'string') throw new Error('JSON: email');
+      if (kind === 'accounts' && (typeof row.balance !== 'number' || !Number.isFinite(row.balance))) throw new Error('JSON: balance');
+      if (kind === 'transactions' && (typeof row.amount !== 'number' || !Number.isFinite(row.amount) || row.amount <= 0 || !['INCOME', 'EXPENSE'].includes(row.type))) throw new Error('JSON: amount / type');
+    });
+  }
+
+  async function refreshData() {
+    const next = {};
+    for (const kind of ['accounts', 'transactions', 'users']) {
+      next[kind] = await request(endpoints[kind].list);
+      validateRows(kind, next[kind]);
+    }
+    data = next;
+    hasLoaded = true;
+    filteredRows = null;
+    document.getElementById('search').value = '';
+    document.getElementById('typeFilter').value = '';
+    render();
+  }
+
+  async function loadData() {
+    if (busy) return;
+    setBusy(true);
+    try { await refreshData(); notify(t('loaded')); }
+    catch (error) { notify(t('failed') + ' ' + error.message); }
+    finally { setBusy(false); }
+  }
+
+  function notify(message) {
+    document.getElementById('notice').textContent = message;
+    document.getElementById('notice').hidden = false;
+  }
+
+  let startLanguage = 'de';
+  let startTheme = 'light';
+  try {
+    startLanguage = localStorage.getItem('pocketLanguage') || 'de';
+    startTheme = localStorage.getItem('pocketTheme') || 'light';
+  } catch (error) {}
+  if (!translations[startLanguage]) startLanguage = 'de';
+  if (!['light', 'dark', 'midnight', 'ocean', 'forest'].includes(startTheme)) startTheme = 'light';
+  document.getElementById('language').value = startLanguage;
+  document.getElementById('theme').value = startTheme;
+  setTheme(startTheme);
+  setLanguage(startLanguage);
+  loadData();
+</script>
+</body>
+</html>
