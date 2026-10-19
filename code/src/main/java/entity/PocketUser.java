@@ -74,4 +74,16 @@ public class PocketUser {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    
+    // Gezielt keine Accout in to string ausgeben, weil das sonst
+    // in kombination mit der toString zu einer Unendlichschleife führen würde
+    @Override
+    public String toString() {
+        return "PocketUser{" +
+                "id=" + id +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

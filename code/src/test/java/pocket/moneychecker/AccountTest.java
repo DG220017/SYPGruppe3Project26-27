@@ -7,8 +7,4 @@ import javax.print.attribute.standard.PDLOverrideSupported;
 
 public class AccountTest {
 
-    PocketU
-
-    @BeforeEach
-    void
 }
