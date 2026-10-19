@@ -95,4 +95,16 @@ public class Transaction {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", notes='" + notes + '\'' +
+                ", date=" + date +
+                ", costType=" + costType +
+                ", transactionType=" + transactionType +
+                '}';
+    }
 }

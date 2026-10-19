@@ -83,4 +83,14 @@ public class Account {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", balance=" + balance +
+                ", pocketUser=" + pocketUser.toString() +
+                '}';
+    }
 }
