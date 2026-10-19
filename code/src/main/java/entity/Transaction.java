@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "transactions")
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,41 +49,26 @@ public class Transaction {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
 
     public String getNotes() {
         return notes;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
 
     public CostType getCostType() {
         return costType;
     }
 
-    public void setCostType(CostType costType) {
-        this.costType = costType;
-    }
 
     public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -99,12 +84,18 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "id=" + id +
-                ", amount=" + amount +
-                ", notes='" + notes + '\'' +
-                ", date=" + date +
-                ", costType=" + costType +
-                ", transactionType=" + transactionType +
+                "id=" + getId() +
+                ", amount=" + getAmount() +
+                ", notes='" + getNotes() + '\'' +
+                ", date=" + getDate() +
+                ", costType=" + getCostType() +
+                ", transactionType=" + getTransactionType() +
                 '}';
+    }
+
+
+    @Override
+    public int compareTo(Transaction o) {
+        return this.date.compareTo(o.date);
     }
 }

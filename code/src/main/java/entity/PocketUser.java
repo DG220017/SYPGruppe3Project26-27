@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class PocketUser {
+public class PocketUser implements Comparable<PocketUser>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,5 +85,14 @@ public class PocketUser {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    // Zuerst nach Email und dann nach id
+    @Override
+    public int compareTo(PocketUser o) {
+        if (this.email.equals(o.email)){
+            return Long.compare(this.id, o.id);
+        }
+        return this.email.compareTo(o.email);
     }
 }

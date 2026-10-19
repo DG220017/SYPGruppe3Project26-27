@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "accounts")
-public class Account {
+public class Account implements Comparable<Account>{
 
     @Id
     @GeneratedValue
@@ -92,5 +92,14 @@ public class Account {
                 ", balance=" + balance +
                 ", pocketUser=" + pocketUser.toString() +
                 '}';
+    }
+
+
+    @Override
+    public int compareTo(Account o) {
+        if(this.username.equals(o.username)) {
+            return Long.compare(this.id, o.id);
+        }
+        return this.username.compareTo(o.username);
     }
 }
