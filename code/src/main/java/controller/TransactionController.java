@@ -50,4 +50,8 @@ public class TransactionController {
         return transactionService.getTransactionsAllByType(type);
     }
 
+    // Für JUnit Test zwecke
+    public TransactionService getTransactionService() {
+        return transactionService;
+    }
 }
