@@ -68,8 +68,7 @@ public class TransactionControllerTest {
 
         assertEquals(addTransactions.getFirst(), controller.addTransaction(transaction1));
     }
-
-//    @Test
+//T//    @Test
 //    public void testRemoveTransaction(){
 //        List<Transaction> remainingTransactions = new ArrayList<>(List.of(transaction1));
 //
