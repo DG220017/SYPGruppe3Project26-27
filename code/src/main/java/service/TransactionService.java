@@ -21,6 +21,7 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
+    //To be done!
     public void getTransactionsInTimespan(LocalDate from, LocalDate to){}
 
     public Transaction addTransaction(Transaction transaction){
