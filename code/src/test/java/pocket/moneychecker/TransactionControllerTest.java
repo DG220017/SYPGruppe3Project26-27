@@ -2,16 +2,23 @@ package pocket.moneychecker;
 
 import controller.TransactionController;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import repository.TransactionRepository;
+import service.AccountService;
 import service.TransactionService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransactionControllerTest {
 
-    private TransactionService t1;
-    private TransactionRepository repository;
-    private TransactionController controller;
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private TransactionService transactionService;
+
 
     @Test
     public void testTransactionControllerConstructor(){
