@@ -33,7 +33,7 @@ public class UserController {
     @DeleteMapping("/removeUser/{id}")
     public ResponseEntity<PocketUser> removeUser(@PathVariable long id){
         try{
-            userService.removeUser(id)
+            userService.removeUser(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (PocketUserNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
