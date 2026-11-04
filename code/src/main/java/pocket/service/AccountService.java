@@ -6,7 +6,6 @@ import pocket.exception.AccountNotFoundException;
 import pocket.repository.AccountRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountService {

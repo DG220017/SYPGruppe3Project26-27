@@ -9,7 +9,6 @@ import pocket.exception.PocketUserNotFoundException;
 import pocket.service.UserService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
