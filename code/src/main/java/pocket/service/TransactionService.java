@@ -1,5 +1,6 @@
 package pocket.service;
 
+import jakarta.transaction.Transactional;
 import pocket.DAO.TransactionType;
 import pocket.entity.Transaction;
 import org.springframework.stereotype.Service;
@@ -18,23 +19,28 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    @Transactional
     public List<Transaction> getAllTransactions(){
         return transactionRepository.findAll();
     }
 
     //To be done!
+    @Transactional
     public void getTransactionsInTimespan(LocalDate from, LocalDate to){}
 
+    @Transactional
     public Transaction addTransaction(Transaction transaction){
         return transactionRepository.save(transaction);
     }
 
+    @Transactional
     public Transaction removeTransaction(long id){
         Transaction transaction = getTransactionById(id);
         transactionRepository.delete(transaction);
         return transaction;
     }
 
+    @Transactional
     public Transaction getTransactionById(long id){
 
         return transactionRepository.findById(id).orElseThrow(()->
@@ -43,12 +49,14 @@ public class TransactionService {
         });
     }
 
+    @Transactional
     public Transaction getTransactionByName(String name){
         return transactionRepository.findByName(name).orElseThrow(()->{
             return new TransactionNotFoundException("Transaction with name: "+name+" could not be found.");
         });
     }
 
+    @Transactional
     public List<Transaction> getTransactionsAllByType(TransactionType type){
         return transactionRepository.findAllByTransactionType(type);
     }
