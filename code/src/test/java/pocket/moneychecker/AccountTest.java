@@ -1,6 +1,6 @@
 package pocket.moneychecker;
 
-import entity.Account;
+import pocket.entity.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import repository.AccountRepository;
-import service.AccountService;
+import pocket.repository.AccountRepository;
+import pocket.service.AccountService;
 
 import java.util.List;
 

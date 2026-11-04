@@ -1,8 +1,9 @@
-package service;
+package pocket.service;
 
-import entity.PocketUser;
+import pocket.entity.PocketUser;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
+import pocket.exception.PocketUserNotFoundException;
+import pocket.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,9 @@ public class UserService {
     }
 
     public PocketUser getUserByEmail(String email){
-        return userRepository.findUserByEmail(email);
+        return userRepository.findUserByEmail(email).orElseThrow(()->{
+            return new PocketUserNotFoundException("Pocketuser with email: "+email+" could not be found");
+        });
     }
 
 }

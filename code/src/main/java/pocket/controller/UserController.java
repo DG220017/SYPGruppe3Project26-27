@@ -1,9 +1,10 @@
-package controller;
+package pocket.controller;
 
-import entity.PocketUser;
+import pocket.entity.PocketUser;
 
 import org.springframework.web.bind.annotation.*;
-import service.UserService;
+import pocket.exception.PocketUserNotFoundException;
+import pocket.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,12 @@ public class UserController {
 
     @GetMapping("/findUserbyId")
     public Optional<PocketUser> getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
+        try{
+            return userService.getUserById(id);
+        }catch (PocketUserNotFoundException e){
+            // Response entity
+        }
+        return null;
     }
 
     @GetMapping("/findUserbyEmail")

@@ -1,8 +1,9 @@
-package controller;
+package pocket.controller;
 
-import entity.Account;
+import pocket.entity.Account;
 import org.springframework.web.bind.annotation.*;
-import service.AccountService;
+import pocket.exception.AccountNotFoundException;
+import pocket.service.AccountService;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +11,9 @@ import java.util.Optional;
 @RestController
 public class AccountController {
 
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    public void setAccountService(AccountService accountService){
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
 
@@ -32,8 +33,13 @@ public class AccountController {
     }
 
     @GetMapping("/getAccountbyId")
-    public Optional<Account> getAccountById(@RequestParam long id){
-        return accountService.getAccountById(id);
+    public Account getAccountById(@RequestParam long id){
+        try{
+            return accountService.getAccountById(id);
+        }catch (AccountNotFoundException e){
+            // hier mommt noch die anpassung mit response entity
+        }
+        return null;
     }
 
 }

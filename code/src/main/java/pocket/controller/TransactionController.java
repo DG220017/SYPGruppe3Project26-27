@@ -1,12 +1,12 @@
-package controller;
+package pocket.controller;
 
 
-import DAO.TransactionType;
-import entity.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pocket.DAO.TransactionType;
+import pocket.entity.Transaction;
+
 import org.springframework.web.bind.annotation.*;
-import service.TransactionService;
+import pocket.exception.TransactionNotFoundException;
+import pocket.service.TransactionService;
 
 import java.util.List;
 
@@ -42,7 +42,12 @@ public class TransactionController {
 
     @GetMapping("/findTransactionbyID")
     public Transaction getTransactionById(@PathVariable Long id){
-       return transactionService.getTransactionById(id);
+        try{
+            return transactionService.getTransactionById(id);
+        }catch (TransactionNotFoundException e){
+            // Response entity dann säter
+        }
+        return null;
     }
 
     @GetMapping("findAllTransactionsbyType")

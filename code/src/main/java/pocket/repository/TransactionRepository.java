@@ -1,20 +1,19 @@
-package repository;
+package pocket.repository;
 
-import DAO.TransactionType;
-import entity.Transaction;
+import pocket.DAO.TransactionType;
+import pocket.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
 
-    Transaction findById(long id);
-
-    Transaction findByName(String name);
+    Optional<Transaction> findByName(String name);
 
     List<Transaction> findAllByTransactionType(TransactionType type);
 }

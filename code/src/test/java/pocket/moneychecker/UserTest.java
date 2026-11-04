@@ -1,5 +1,5 @@
 package pocket.moneychecker;
-import entity.PocketUser;
+import pocket.entity.PocketUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

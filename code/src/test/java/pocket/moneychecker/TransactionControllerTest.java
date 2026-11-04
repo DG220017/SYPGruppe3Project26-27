@@ -1,17 +1,17 @@
 package pocket.moneychecker;
 
-import DAO.CostType;
-import DAO.TransactionType;
-import controller.TransactionController;
-import entity.Transaction;
+import pocket.DAO.CostType;
+import pocket.DAO.TransactionType;
+import pocket.controller.TransactionController;
+import pocket.entity.Transaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import repository.TransactionRepository;
-import service.TransactionService;
+import pocket.repository.TransactionRepository;
+import pocket.service.TransactionService;
 
 import java.time.LocalDate;
 import java.util.List;

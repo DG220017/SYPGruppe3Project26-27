@@ -1,7 +1,7 @@
-package entity;
+package pocket.entity;
 
-import DAO.CostType;
-import DAO.TransactionType;
+import pocket.DAO.CostType;
+import pocket.DAO.TransactionType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,6 +19,8 @@ public class Transaction implements Comparable<Transaction>{
 
     private String notes;
 
+    private String name;
+
     private LocalDate date;
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +33,7 @@ public class Transaction implements Comparable<Transaction>{
 
     }
 
-    public Transaction(int id, double amount, String notes, LocalDate date,
+    public Transaction(String name, int id, double amount, String notes, LocalDate date,
                        CostType costType, TransactionType transactionType) {
         this.id = id;
         this.amount = amount;
@@ -39,6 +41,7 @@ public class Transaction implements Comparable<Transaction>{
         this.date = date;
         this.costType = costType;
         this.transactionType = transactionType;
+        this.name = name;
     }
 
     public long getId() {
@@ -90,9 +93,13 @@ public class Transaction implements Comparable<Transaction>{
                 ", date=" + getDate() +
                 ", costType=" + getCostType() +
                 ", transactionType=" + getTransactionType() +
+                ", name=" + getName() +
                 '}';
     }
 
+    public String getName() {
+        return name;
+    }
 
     @Override
     public int compareTo(Transaction o) {

@@ -1,9 +1,9 @@
-package service;
+package pocket.service;
 
-import entity.Account;
-import org.apache.catalina.User;
+import pocket.entity.Account;
 import org.springframework.stereotype.Service;
-import repository.AccountRepository;
+import pocket.exception.AccountNotFoundException;
+import pocket.repository.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +30,10 @@ public class AccountService {
         return account;
     }
 
-    public Optional<Account> getAccountById(long id){
-        return accountRepository.findById(id);
+    public Account getAccountById(long id){
+        return accountRepository.findById(id).orElseThrow(()->{
+            return new AccountNotFoundException("Account with ID: "+id+" could not be found.");
+        });
     }
 
 }

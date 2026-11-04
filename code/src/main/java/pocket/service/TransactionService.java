@@ -1,9 +1,10 @@
-package service;
+package pocket.service;
 
-import DAO.TransactionType;
-import entity.Transaction;
+import pocket.DAO.TransactionType;
+import pocket.entity.Transaction;
 import org.springframework.stereotype.Service;
-import repository.TransactionRepository;
+import pocket.exception.TransactionNotFoundException;
+import pocket.repository.TransactionRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,11 +34,17 @@ public class TransactionService {
     }
 
     public Transaction getTransactionById(long id){
-        return transactionRepository.findById(id);
+
+        return transactionRepository.findById(id).orElseThrow(()->
+        {
+            throw new IllegalArgumentException("Transaction with Id: "+ id +" could not be found.");
+        });
     }
 
     public Transaction getTransactionByName(String name){
-        return transactionRepository.findByName(name);
+        return transactionRepository.findByName(name).orElseThrow(()->{
+            return new TransactionNotFoundException("Transaction with name: "+name+" could not be found.");
+        });
     }
 
     public List<Transaction> getTransactionsAllByType(TransactionType type){

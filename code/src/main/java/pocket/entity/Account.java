@@ -1,4 +1,4 @@
-package entity;
+package pocket.entity;
 
 import jakarta.persistence.*;
 
@@ -87,9 +87,9 @@ public class Account implements Comparable<Account>{
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", balance=" + balance +
+                "id=" + getId() +
+                ", username='" + getUsername()+ '\'' +
+                ", balance=" + getBalance() +
                 ", pocketUser=" + pocketUser.toString() +
                 '}';
     }

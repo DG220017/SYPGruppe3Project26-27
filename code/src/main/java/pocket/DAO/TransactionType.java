@@ -1,4 +1,4 @@
-package DAO;
+package pocket.DAO;
 
 public enum TransactionType {
     GEHALT(1, "GEHALT"),
