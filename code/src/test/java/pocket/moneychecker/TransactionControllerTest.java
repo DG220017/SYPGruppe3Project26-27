@@ -38,9 +38,9 @@ public class TransactionControllerTest {
 
     @BeforeEach
     public void createTransaction() {
-        transaction1 = new Transaction(1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction(2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction3 = new Transaction(3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction1 = new Transaction("t1",1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction2 = new Transaction("t2",2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction3 = new Transaction("t3",3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class TransactionControllerTest {
 
     @Test
     public void testGetTransactionByName(){
-        List<Transaction> expectedTransactions = List.of(transaction1, transaction2, transaction3);        addTransactions.add(transaction1);
+        List<Transaction> expectedTransactions = List.of(transaction1, transaction2, transaction3);
 
         assertEquals(transaction1.getName(), controller.getTransactionByName(transaction1.getName()));
 
