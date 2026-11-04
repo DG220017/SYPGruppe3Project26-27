@@ -54,7 +54,7 @@ public class TransactionController {
     @GetMapping("/findTransactionbyID")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id){
         try{
-            return new ResponseEntity<>(transactionService.getTransactionById(id),HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(transactionService.getTransactionById(id),HttpStatus.OK);
         }catch (TransactionNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -41,9 +41,9 @@ public class TransactionControllerTest {
 
     @BeforeEach
     public void createTransaction() {
-        transaction1 = new Transaction("t1", 1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction("t2", 2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction3 = new Transaction("t3", 3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction1 = new Transaction("t1", 1L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction2 = new Transaction("t2", 2L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction3 = new Transaction("t3", 3L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
     }
 
     @Test
@@ -119,5 +119,21 @@ public class TransactionControllerTest {
         assertEquals(transaction1, response.getBody());
     }
 
+    @Test
+    public void testGetTransactionById(){
+        
+        //Arrange
+        Transaction transaction1 = new Transaction();
+
+        when(service.getTransactionById(1L)).thenReturn(transaction1);
+
+        //Act
+        ResponseEntity<Transaction> response =
+                controller.getTransactionById(1L);
+
+        //Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(transaction1, response.getBody());
+    }
 }
 
