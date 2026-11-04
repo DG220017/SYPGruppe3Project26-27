@@ -75,5 +75,11 @@ public class TransactionControllerTest {
 //        assertEquals(transaction2, controller.removeTransaction(transaction2));
 //   }
 
-    
+    @Test
+    public void testGetTransactionByName(){
+        List<Transaction> expectedTransactions = List.of(transaction1, transaction2, transaction3);        addTransactions.add(transaction1);
+
+        assertEquals(transaction1.getName(), controller.getTransactionByName(transaction1.getName()));
+
+    }
 }
