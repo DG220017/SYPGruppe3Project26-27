@@ -63,6 +63,8 @@
             <label for="password">Passwort</label>
             <input id="password" type="password" autocomplete="current-password" required>
             <button class="submit" type="submit">Anmelden</button>
+            <button id="registerButton" class="submit secondary" type="button">Konto erstellen</button>
+            <p>Neues Konto: E-Mail und Passwort mit mindestens 8 Zeichen eingeben, dann „Konto erstellen“ klicken.</p>
         </form>
     </section>
 
@@ -112,12 +114,12 @@
     const BASE_URL = "";
     const TRANSACTIONS_URL = "/api/transactions";
 
-    // NOCH EINTRAGEN: Diese beiden Endpunkte existieren in deinem Controller bisher nicht.
+    // Anmeldung und Abmeldung werden im AuthController verarbeitet.
     // Login-Vertrag: POST mit {email, password}; 2xx nur bei gültigen Zugangsdaten.
     // Das Backend erstellt dabei eine Session mit Cookie; falsche Zugangsdaten ergeben 401.
     // Logout-Vertrag: POST, Session im Backend beenden, danach 2xx zurückgeben.
-    const LOGIN_URL = "";
-    const LOGOUT_URL = "";
+    const LOGIN_URL = "/api/auth/login";
+    const LOGOUT_URL = "/api/auth/logout";
 
     // Kurze Hilfsfunktion, damit HTML-Elemente einfacher angesprochen werden können.
     function element(id) { return document.getElementById(id); }
@@ -198,6 +200,39 @@
             await loadTransactions();
         } catch (error) { message(error.message); }
         finally { button.disabled = false; }
+    });
+
+    // Registrierung verwendet die E-Mail und das Passwort aus dem Loginformular.
+    element("registerButton").addEventListener("click", async function() {
+        if (!element("loginForm").reportValidity()) return;
+        if (element("password").value.length < 8) {
+            message("Für ein neues Konto muss das Passwort mindestens 8 Zeichen haben.");
+            return;
+        }
+
+        const buttons = element("loginForm").querySelectorAll("button");
+        for (const button of buttons) button.disabled = true;
+        try {
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: element("email").value.trim(),
+                    password: element("password").value
+                })
+            });
+            if (response.status === 201) {
+                message("Konto erstellt. Klicke jetzt auf Anmelden.");
+            } else if (response.status === 400 || response.status === 409) {
+                message(await response.text());
+            } else {
+                message("Registrierung fehlgeschlagen (HTTP " + response.status + ").");
+            }
+        } catch (error) {
+            message("Backend nicht erreichbar. Öffne die Seite über http://localhost:8080/pocket.html.");
+        } finally {
+            for (const button of buttons) button.disabled = false;
+        }
     });
 
     // Alle vom Backend freigegebenen Transaktionen laden und als Tabelle anzeigen.
