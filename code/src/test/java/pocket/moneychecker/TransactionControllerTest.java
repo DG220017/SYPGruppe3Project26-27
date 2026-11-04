@@ -1,5 +1,7 @@
 package pocket.moneychecker;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import pocket.DAO.CostType;
 import pocket.DAO.TransactionType;
 import pocket.controller.TransactionController;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class) // WICHTIG: Aktiviert Mockito für diese Klasse
@@ -38,9 +41,9 @@ public class TransactionControllerTest {
 
     @BeforeEach
     public void createTransaction() {
-        transaction1 = new Transaction("t1",1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction("t2",2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction3 = new Transaction("t3",3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction1 = new Transaction("t1", 1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction2 = new Transaction("t2", 2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction3 = new Transaction("t3", 3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
     }
 
     @Test
@@ -51,35 +54,70 @@ public class TransactionControllerTest {
 
     @Test
     public void testGetAllTransactions() {
-        // Da 'service' ein Mock ist, müssen wir ihm sagen, was er zurückgeben soll
-        List<Transaction> expectedTransactions = List.of(transaction1, transaction2, transaction3);
-        when(service.getAllTransactions()).thenReturn(expectedTransactions);
+        // Arrange
+        List<Transaction> expectedTransactions =
+                List.of(transaction1, transaction2, transaction3);
 
-        // Testen des Controller-Aufrufs
-        assertEquals(expectedTransactions, controller.getAllTransactions());
-    }
-    @Test
-    public void testAddTransaction(){
-        List<Transaction> addTransactions = new ArrayList<>();
-        addTransactions.add(transaction1);
-        when(service.addTransaction(transaction1)).thenReturn(addTransactions.getFirst());
+        when(service.getAllTransactions())
+                .thenReturn(expectedTransactions);
 
-        assertEquals(addTransactions.getFirst(), controller.addTransaction(transaction1));
+        // Act
+        ResponseEntity<List<Transaction>> response =
+                controller.getAllTransactions();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedTransactions, response.getBody());
     }
-//T//    @Test
-//    public void testRemoveTransaction(){
-//        List<Transaction> remainingTransactions = new ArrayList<>(List.of(transaction1));
-//
-//        when(service.removeTransaction(transaction2)).thenReturn(transaction2);
-//
-//        assertEquals(transaction2, controller.removeTransaction(transaction2));
-//   }
 
     @Test
-    public void testGetTransactionByName(){
-        List<Transaction> expectedTransactions = List.of(transaction1, transaction2, transaction3);
+    public void testAddTransaction() {
 
-        assertEquals(transaction1.getName(), controller.getTransactionByName(transaction1.getName()));
+        // Arrange
+        when(service.addTransaction(transaction1))
+                .thenReturn(transaction1);
 
+        // Act
+        ResponseEntity<Transaction> response =
+                controller.addTransaction(transaction1);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(transaction1, response.getBody());
     }
+
+    @Test
+    public void testRemoveTransaction(){
+        // Arrange
+        when(service.removeTransaction(2))
+                .thenReturn(transaction2);
+
+        // Act
+        ResponseEntity<Transaction> response =
+                controller.removeTransaction(2);
+
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
+   }
+
+    @Test
+    public void testGetTransactionByName() {
+
+        // Arrange
+        Transaction transaction1 = new Transaction();
+
+        when(service.getTransactionByName("t1"))
+                .thenReturn(transaction1);
+
+        // Act
+        ResponseEntity<Transaction> response =
+                controller.getTransactionByName("t1");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(transaction1, response.getBody());
+    }
+
 }
+
