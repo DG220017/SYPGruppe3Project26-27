@@ -1,5 +1,8 @@
 package pocket.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import pocket.entity.Account;
 import org.springframework.web.bind.annotation.*;
 import pocket.exception.AccountNotFoundException;
@@ -18,28 +21,28 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<Account> getAllAccounts(){
-        return accountService.getAllAccounts();
+    public ResponseEntity<List<Account>> getAllAccounts(){
+        return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/addAccount")
-    public Account addAccount(@RequestBody Account account){
-        return accountService.addAccount(account);
+    public ResponseEntity<Account> addAccount(@RequestBody Account account){
+        return new ResponseEntity<>(accountService.addAccount(account),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/removeAccount")
-    public Account removeAccount(@RequestBody Account account){
-        return accountService.removeAccount(account);
+    public ResponseEntity<Void> removeAccount(@RequestBody Account account){
+        accountService.removeAccount(account);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/getAccountbyId")
-    public Account getAccountById(@RequestParam long id){
+    public ResponseEntity<Account> getAccountById(@RequestParam long id){
         try{
-            return accountService.getAccountById(id);
+            return new ResponseEntity<>(accountService.getAccountById(id), HttpStatus.OK);
         }catch (AccountNotFoundException e){
-            // hier mommt noch die anpassung mit response entity
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 
 }

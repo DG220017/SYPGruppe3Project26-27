@@ -1,5 +1,7 @@
 package pocket.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import pocket.entity.PocketUser;
 
 import org.springframework.web.bind.annotation.*;
@@ -20,32 +22,35 @@ public class UserController {
     }
 
     @GetMapping
-    public List<PocketUser> getAllUsers(){
-         return userService.getAllUsers();
+    public ResponseEntity<List<PocketUser>> getAllUsers(){
+         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping("/addUser")
-    public PocketUser addUser(@PathVariable PocketUser user){
-        return userService.addUser(user);
+    public ResponseEntity<PocketUser> addUser(@PathVariable PocketUser user){
+        return new ResponseEntity<>(userService.addUser(user),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/removeUser")
-    public PocketUser removeUser(@PathVariable PocketUser user){
-        return userService.removeUser(user);
+    public ResponseEntity<PocketUser> removeUser(@PathVariable PocketUser user){
+        return new ResponseEntity<>(userService.removeUser(user), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/findUserbyId")
-    public Optional<PocketUser> getUserById(@PathVariable Long id){
+    public ResponseEntity<PocketUser> getUserById(@PathVariable Long id){
         try{
-            return userService.getUserById(id);
+            return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
         }catch (PocketUserNotFoundException e){
-            // Response entity
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 
     @GetMapping("/findUserbyEmail")
-    public PocketUser getUserByEmail(@PathVariable String email){
-        return userService.getUserByEmail(email);
+    public ResponseEntity<PocketUser> getUserByEmail(@PathVariable String email){
+        try{
+            return new ResponseEntity<>(userService.getUserByEmail(email),HttpStatus.OK);
+        }catch (PocketUserNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

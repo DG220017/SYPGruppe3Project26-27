@@ -26,8 +26,10 @@ public class UserService {
         return pocketUser;
     }
 
-    public Optional<PocketUser> getUserById(long id){
-        return userRepository.findById(id);
+    public PocketUser getUserById(long id){
+        return userRepository.findById(id).orElseThrow(()->{
+            return new PocketUserNotFoundException("Pocketuser with ID: "+id+" could not be found");
+        });
     }
 
     public PocketUser addUser(PocketUser pocketUser){
