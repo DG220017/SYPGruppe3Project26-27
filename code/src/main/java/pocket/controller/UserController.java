@@ -26,13 +26,18 @@ public class UserController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<PocketUser> addUser(@PathVariable PocketUser user){
+    public ResponseEntity<PocketUser> addUser(@RequestBody PocketUser user){
         return new ResponseEntity<>(userService.addUser(user),HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/removeUser")
-    public ResponseEntity<PocketUser> removeUser(@PathVariable PocketUser user){
-        return new ResponseEntity<>(userService.removeUser(user), HttpStatus.NO_CONTENT);
+    @DeleteMapping("/removeUser/{id}")
+    public ResponseEntity<PocketUser> removeUser(@PathVariable long id){
+        try{
+            userService.removeUser(id)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (PocketUserNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/findUserbyId")

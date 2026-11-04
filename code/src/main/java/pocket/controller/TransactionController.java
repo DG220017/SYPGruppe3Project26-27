@@ -28,14 +28,18 @@ public class TransactionController {
     }
 
     @PostMapping("/addTransaction")
-    public ResponseEntity<Transaction> addTransaction(@PathVariable Transaction transaction){
+    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction){
          return new ResponseEntity<>(transactionService.addTransaction(transaction), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/removeTransaction")
-    public ResponseEntity removeTransaction(@PathVariable Transaction transaction){
-        transactionService.removeTransaction(transaction);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/removeTransaction/{id}")
+    public ResponseEntity removeTransaction(@PathVariable long id){
+        try{
+            transactionService.removeTransaction(id);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (TransactionNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/findTransactionbyName")

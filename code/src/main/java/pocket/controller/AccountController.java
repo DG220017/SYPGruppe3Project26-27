@@ -8,7 +8,6 @@ import pocket.exception.AccountNotFoundException;
 import pocket.service.AccountService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class AccountController {
@@ -29,10 +28,14 @@ public class AccountController {
         return new ResponseEntity<>(accountService.addAccount(account),HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/removeAccount")
-    public ResponseEntity<Void> removeAccount(@RequestBody Account account){
-        accountService.removeAccount(account);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/removeAccount/{id}")
+    public ResponseEntity<Void> removeAccount(@PathVariable long id){
+        try{
+            accountService.removeAccount(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }catch (AccountNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/getAccountbyId")

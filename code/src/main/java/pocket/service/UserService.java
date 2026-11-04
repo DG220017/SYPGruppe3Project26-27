@@ -20,7 +20,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public PocketUser removeUser(PocketUser pocketUser){
+    public PocketUser removeUser(long id){
+        PocketUser pocketUser = getUserById(id);
         userRepository.delete(pocketUser);
         return pocketUser;
     }
