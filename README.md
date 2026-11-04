@@ -52,3 +52,19 @@ Einzelne Planungsschritte sind in Mendix etwas näher ausgeführt.
 - addAccount(Account account)
 - removeAccount(Account account)
 - getAccountById(long id)
+
+## Grundanforderungen
++ Setup Project
+  - Ein Projekt aufsetzen, das bereit für Implementierungen ist
++ GUI
+  - Eine GUI erstellen, mit HTML, CSS und JavaScript, die mit dem Code interagieren kann
++ Database
+  - Die richtige Datenbank aussuchen und implementieren
++ Add payment
+  - Die Möglichkeit eine Zahlung in Pocket hizuzufügen
++ Delete payment
+  - Die Möglichkeit eine hinzugefügte Zahlung in Pocket zu entfernen
++ Add salary
+  - Die Möglichkeit ein Gehalt in Pocket hizuzufügen
++ Delete Salary
+  - Die Möglichkeit ein hinzugefügtes Gehalt in Pocket zu entfernen

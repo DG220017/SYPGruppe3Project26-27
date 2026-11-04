@@ -14,6 +14,7 @@ import pocket.repository.TransactionRepository;
 import pocket.service.TransactionService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +39,8 @@ public class TransactionControllerTest {
     @BeforeEach
     public void createTransaction() {
         transaction1 = new Transaction(1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction(1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction3 = new Transaction(1, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction2 = new Transaction(2, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction3 = new Transaction(3, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
     }
 
     @Test
@@ -57,4 +58,22 @@ public class TransactionControllerTest {
         // Testen des Controller-Aufrufs
         assertEquals(expectedTransactions, controller.getAllTransactions());
     }
+    @Test
+    public void testAddTransaction(){
+        List<Transaction> addTransactions = new ArrayList<>();
+        addTransactions.add(transaction1);
+        when(service.addTransaction(transaction1)).thenReturn(addTransactions.getFirst());
+
+        assertEquals(addTransactions.getFirst(), controller.addTransaction(transaction1));
+    }
+//T//    @Test
+//    public void testRemoveTransaction(){
+//        List<Transaction> remainingTransactions = new ArrayList<>(List.of(transaction1));
+//
+//        when(service.removeTransaction(transaction2)).thenReturn(transaction2);
+//
+//        assertEquals(transaction2, controller.removeTransaction(transaction2));
+//   }
+
+    
 }

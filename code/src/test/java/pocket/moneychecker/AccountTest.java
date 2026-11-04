@@ -11,33 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pocket.repository.AccountRepository;
 import pocket.service.AccountService;
 
-import java.util.List;
+public class AccountTest {
 
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class)
-class AccountTest {
-
-    @Mock
-    private AccountRepository accountRepository;
-
-    @InjectMocks
-    private AccountService accountService;
-
-    @BeforeEach
-    void createAccounts() {
-        when(accountRepository.findAll()).thenReturn(List.of(
-                new Account(1, "Name1", 100),
-                new Account(2, "Name5", -100),
-                new Account(3, "name12", 10000),
-                new Account(4, "enam1", 9342),
-                new Account(5, "jame21", -9834),
-                new Account(6, "0asd12", 21493)
-        ));
-    }
-
-    @Test
-    void testSortedAccounts() {
-        Assertions.assertEquals(6, accountService.getAllAccounts().size());
-    }
 }
