@@ -6,45 +6,92 @@
     <!-- Passt die Darstellung an die Bildschirmbreite an. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket – Finanzverwaltung</title>
+    <script>
+        // Vor dem Zeichnen der Seite das gespeicherte Farbschema anwenden.
+        let preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        try {
+            const savedTheme = localStorage.getItem("pocket-theme");
+            if (savedTheme === "light" || savedTheme === "dark") preferredTheme = savedTheme;
+        } catch (error) { /* Die Seite funktioniert auch ohne lokalen Speicher. */ }
+        document.documentElement.dataset.theme = preferredTheme;
+    </script>
     <style>
-        /* Grundlayout mit heller Hintergrundfarbe. */
+        /* Alle Farben zentral, damit Hell und Dunkel dieselben Komponenten nutzen. */
+        :root { color-scheme: light; --page: #f6f7f9; --surface: #ffffff; --field: #fafbfc; --text: #20242d; --muted: #697180; --line: #e5e7ec; --hover: #f0f2f5; --accent: #335bd6; --accent-hover: #294ab3; --on-accent: #fff; --danger: #b42332; --danger-bg: #fff0f1; --focus: #819ef6; }
+        :root[data-theme="dark"] { color-scheme: dark; --page: #111318; --surface: #191c23; --field: #15181e; --text: #eceef4; --muted: #a1a9b8; --line: #2c313c; --hover: #252a34; --accent: #9db3ff; --accent-hover: #bdcbff; --on-accent: #172448; --danger: #ffabb2; --danger-bg: #352027; --focus: #9db3ff; }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 24px; font-family: Arial, sans-serif; background: #f1f5f9; color: #243247; }
-        main { max-width: 1000px; margin: 25px auto; }
-        /* Kopfzeile und einfache Wortmarke. */
-        header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
-        .logo { padding: 12px 17px; border-radius: 14px; background: #2563eb; color: white; font-size: 28px; font-weight: bold; }
-        h1, h2 { margin: 0 0 10px; }
-        header p { margin: 0; color: #64748b; }
-        /* Weiße Karten für Login, Eingabe und Tabelle. */
-        .card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; margin-bottom: 20px; }
-        #loginView { max-width: 420px; margin: 50px auto; }
-        /* Beschriftete Eingabefelder und Schaltflächen. */
-        label { display: block; margin-top: 14px; font-size: 14px; font-weight: bold; }
-        input, select, button { font: inherit; border-radius: 7px; padding: 11px; }
-        input, select { width: 100%; margin-top: 6px; border: 1px solid #cbd5e1; }
-        button { border: none; background: #2563eb; color: white; cursor: pointer; }
-        button:hover { background: #1d4ed8; }
-        button:disabled { opacity: 0.6; cursor: wait; }
-        .submit { margin-top: 20px; }
-        .secondary { background: #e2e8f0; color: #243247; }
-        .secondary:hover { background: #cbd5e1; }
-        .delete { background: #b91c1c; }
-        /* Zwei Spalten im Formular, auf kleinen Bildschirmen eine. */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
-        .toolbar { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } body { padding: 12px; } }
-        /* Breite Tabellen lassen sich seitlich scrollen. */
-        .table-wrap { overflow-x: auto; margin-top: 16px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; font-size: 13px; }
-        td { overflow-wrap: anywhere; }
-        /* Gemeinsamer Bereich für Lade-, Erfolgs- und Fehlermeldungen. */
-        #message { line-height: 1.5; padding: 12px; background: #fff; border-radius: 7px; }
+        body { margin: 0; padding: 32px 24px 64px; background: var(--page); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+        main { max-width: 1040px; margin: 0 auto; }
+        header { display: flex; align-items: center; gap: 12px; padding: 8px 0 28px; margin-bottom: 28px; border-bottom: 1px solid var(--line); }
+        .logo { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--text); color: var(--surface); font-size: 23px; font-weight: 650; }
+        h1 { margin: 0; font-size: 24px; letter-spacing: -.8px; font-weight: 650; }
+        h2 { margin: 0 0 20px; font-size: 18px; letter-spacing: -.35px; font-weight: 600; }
+        header p { margin: 0; color: var(--muted); font-size: 12px; }
+        .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-bottom: 20px; }
+        #loginView { max-width: 420px; margin: 64px auto; padding: 32px; }
+        #loginView h2 { font-size: 24px; margin-bottom: 24px; }
+        #loginView form > p { margin: 20px 0 0; font-size: 12px; line-height: 1.7; color: var(--muted); }
+        label { display: block; margin-top: 16px; font-size: 12px; font-weight: 600; color: var(--muted); }
+        input, select, button { font: inherit; border-radius: 8px; }
+        input, select { width: 100%; min-width: 0; height: 44px; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--line); background: var(--field); color: var(--text); }
+        input::placeholder { color: var(--muted); opacity: .8; }
+        input:hover, select:hover { border-color: var(--muted); }
+        button { min-height: 40px; padding: 9px 16px; border: 1px solid transparent; background: var(--accent); color: var(--on-accent); font-weight: 600; font-size: 13px; cursor: pointer; }
+        button:hover { background: var(--accent-hover); }
+        button:disabled { opacity: .5; cursor: wait; }
+        input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+        a { color: var(--accent); }
+        .submit { margin-top: 22px; }
+        .secondary, .search-submit, .filter-submit, .reset-search { border: 1px solid var(--line); background: transparent; color: var(--text); }
+        .secondary:hover, .search-submit:hover, .filter-submit:hover, .reset-search:hover { background: var(--hover); }
+        .delete { background: transparent; color: var(--danger); min-height: 34px; padding: 5px 10px; }
+        .delete:hover { background: var(--danger-bg); }
+        .grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 0 20px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .toolbar h2 { margin: 0; }
+        #dashboard > .toolbar { padding: 0 0 4px; background: transparent; border: 0; }
+        .search-panel { margin-top: 24px; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .search-heading { margin-bottom: 16px; }
+        .search-heading h3 { margin: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
+        .search-fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 20px; }
+        .search-panel label { margin: 0 0 6px; }
+        .search-control { display: flex; gap: 8px; }
+        .search-control input, .search-control select { margin: 0; }
+        .search-control button { white-space: nowrap; }
+        .search-footer { display: flex; align-items: flex-end; gap: 16px; margin-top: 16px; }
+        .search-filter { flex: 1; min-width: 0; max-width: 420px; }
+        .reset-search { margin-left: auto; }
+        #listStatus { color: var(--muted); font-size: 12px; margin: 18px 0 10px; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th, td { padding: 14px 12px; border-bottom: 1px solid var(--line); }
+        th { color: var(--muted); font-size: 11px; font-weight: 600; white-space: nowrap; }
+        td { overflow-wrap: anywhere; max-width: 260px; }
+        tbody tr:hover { background: var(--field); }
+        tbody tr:last-child td { border-bottom: 0; }
+        #message { padding: 12px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
         #message:empty { display: none; }
-        #message.error { background: #fee2e2; color: #991b1b; }
+        #message.error { background: var(--danger-bg); color: var(--danger); border-color: transparent; }
+        .theme-toggle { margin-left: auto; display: flex; align-items: center; gap: 9px; background: transparent; color: var(--muted); border: 1px solid var(--line); font-size: 12px; }
+        .theme-toggle:hover { background: var(--hover); color: var(--text); }
+        .theme-track { display: block; width: 30px; height: 18px; padding: 3px; border-radius: 20px; background: var(--line); }
+        .theme-track::before { content: ""; display: block; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); }
+        [data-theme="dark"] .theme-track { background: var(--accent); }
+        [data-theme="dark"] .theme-track::before { transform: translateX(12px); background: var(--on-accent); }
         [hidden] { display: none !important; }
+        @media (max-width: 640px) {
+            body { padding: 20px 14px 40px; }
+            header { gap: 10px; padding-bottom: 20px; margin-bottom: 20px; }
+            header p { max-width: 160px; }
+            .card, #loginView { padding: 20px; }
+            #loginView { margin: 32px auto; }
+            .grid, .search-fields { grid-template-columns: minmax(0,1fr); }
+            .search-fields { gap: 16px; }
+            .search-footer { flex-direction: column; align-items: stretch; }
+            .search-filter { max-width: none; }
+            .reset-search { margin-left: 0; }
+            .theme-toggle { padding: 8px; gap: 6px; }
+        }
     </style>
 </head>
 <body>
@@ -53,6 +100,10 @@
     <header>
         <div class="logo" aria-hidden="true">P</div>
         <div><h1>Pocket</h1><p>Deine Transaktionen im Überblick.</p></div>
+        <button id="themeToggle" class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dunkelmodus">
+            <span class="theme-track" aria-hidden="true"></span>
+            <span>Darkmode</span>
+        </button>
     </header>
     <p id="message" role="status" aria-live="polite"></p>
     <p id="serverHint" hidden><a href="http://localhost:8080/pocket.html">Pocket über das Backend öffnen</a></p>
@@ -103,17 +154,40 @@
                 <h2>Transaktionen</h2>
                 <button id="reloadButton" class="secondary" type="button">Aktualisieren</button>
             </div>
-            <div class="grid" style="margin-top: 12px;">
-                <div><label for="searchId">Transaktion nach ID suchen</label><input id="searchId" type="number" min="1" step="1" placeholder="z. B. 5"></div>
-                <div><label for="searchName">Transaktion nach Name suchen</label><input id="searchName" type="text" placeholder="Name"></div>
-                <div><label for="filterType">Nach Transaktionsart filtern</label><select id="filterType"><option value="">Alle Transaktionsarten</option></select></div>
-            </div>
-            <div class="toolbar" style="justify-content: flex-start; margin-top: 14px;">
-                <button id="searchIdButton" class="secondary" type="button">ID suchen</button>
-                <button id="searchNameButton" class="secondary" type="button">Name suchen</button>
-                <button id="filterButton" class="secondary" type="button">Typ filtern</button>
-                <button id="resetFilterButton" class="secondary" type="button">Alle anzeigen</button>
-            </div>
+            <section class="search-panel" aria-labelledby="searchTitle">
+                <div class="search-heading">
+                    <div>
+                        <h3 id="searchTitle">Suchen &amp; filtern</h3>
+
+                    </div>
+                </div>
+                <div class="search-fields">
+                    <div>
+                        <label for="searchId">Transaktions-ID</label>
+                        <div class="search-control">
+                            <input id="searchId" type="number" min="1" step="1" placeholder="z. B. 5">
+                            <button id="searchIdButton" class="search-submit" type="button" aria-label="Transaktion nach ID suchen">Suchen</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="searchName">Name der Buchung</label>
+                        <div class="search-control">
+                            <input id="searchName" type="text" placeholder="z. B. Einkauf oder Gehalt">
+                            <button id="searchNameButton" class="search-submit" type="button" aria-label="Transaktion nach Name suchen">Suchen</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-footer">
+                    <div class="search-filter">
+                        <label for="filterType">Kategorie</label>
+                        <div class="search-control">
+                            <select id="filterType"><option value="">Alle Kategorien</option></select>
+                            <button id="filterButton" class="filter-submit" type="button">Filtern</button>
+                        </div>
+                    </div>
+                    <button id="resetFilterButton" class="reset-search" type="button">Alle anzeigen</button>
+                </div>
+            </section>
             <p id="listStatus">Noch keine Daten geladen.</p>
             <div class="table-wrap">
                 <table>
@@ -126,6 +200,20 @@
 </main>
 <script>
     "use strict";
+    // Nur das Farbschema speichern, keine Login- oder Finanzdaten.
+    const themeToggle = document.getElementById("themeToggle");
+    function updateThemeSwitch() {
+        themeToggle.setAttribute("aria-checked", String(document.documentElement.dataset.theme === "dark"));
+    }
+    updateThemeSwitch();
+    themeToggle.addEventListener("click", function() {
+        const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = theme;
+        updateThemeSwitch();
+        try { localStorage.setItem("pocket-theme", theme); }
+        catch (error) { /* Umschalten bleibt auch ohne Speicherung möglich. */ }
+    });
+
     // Die HTML-Seite muss über Spring Boot ausgeliefert werden (gleiche Origin).
     const TRANSACTIONS_URL = "/api/transactions";
     const AUTH_URL = "/api/auth";
@@ -156,7 +244,7 @@
     // Während einer Anfrage keine zweite Anmeldung, Speicherung oder Löschung starten.
     function setBusy(value) {
         busy = value;
-        for (const control of document.querySelectorAll("button, input, select")) {
+        for (const control of document.querySelectorAll("button:not(#themeToggle), input, select")) {
             control.disabled = value;
         }
     }
