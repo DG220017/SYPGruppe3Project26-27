@@ -46,7 +46,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void testTransactionControllerConstructor() {
+    public void testUserControllerConstructor() {
         // Prüft, ob der Service korrekt im Controller sitzt
         assertEquals(service, controller.getTransactionService());
     }
