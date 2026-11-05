@@ -57,4 +57,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+// Für JUnit Test zwecke
+    public UserService getUserService() {
+        return userService;
+    }
 }

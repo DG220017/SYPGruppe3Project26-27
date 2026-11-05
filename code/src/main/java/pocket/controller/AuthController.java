@@ -14,7 +14,6 @@ import pocket.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:63342")
 public class AuthController {
 
     // Nur diese beiden Werte werden vom Loginformular gesendet.

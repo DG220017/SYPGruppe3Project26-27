@@ -105,4 +105,16 @@ public class Transaction implements Comparable<Transaction>{
     public int compareTo(Transaction o) {
         return this.date.compareTo(o.date);
     }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setCostType(CostType costType) {
+        this.costType = costType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
 }
