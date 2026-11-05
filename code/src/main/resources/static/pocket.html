@@ -266,10 +266,9 @@ async function addTransaction(event) {
     const name = element("name").value.trim();
     const amount = Number(element("amount").value);
     if (!name || !Number.isFinite(amount) || amount <= 0) return message("Bitte gültigen Namen und Betrag eingeben.", true);
-    // Aktuelle Transaction-Entity hat einen Konstruktor mit Long id und ein primitives long-Feld.
-    // id: 0 verhindert dort null-Unboxing. Langfristig die Entity auf Long + DTO umstellen.
+    // Die Datenbank erzeugt die ID; bei neuen Transaktionen keine ID mitsenden.
     const data = {
-        id: 0, name, amount, notes: element("notes").value.trim(), date: element("date").value,
+        name, amount, notes: element("notes").value.trim(), date: element("date").value,
         costType: element("costType").value, transactionType: element("transactionType").value
     };
     setBusy(true);
