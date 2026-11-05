@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import pocket.exception.AccountNotFoundException;
 import pocket.repository.AccountRepository;
 
-import java.beans.Transient;
 import java.util.List;
 
 @Service
