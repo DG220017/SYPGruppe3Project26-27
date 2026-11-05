@@ -1,4 +1,4 @@
-package pocket.DAO;
+package pocket.enums;
 
 public enum CostType {
     RECURRING_REVENUE(1, "RECURRING_REVENUE"),

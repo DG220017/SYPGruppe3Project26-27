@@ -3,7 +3,7 @@ package pocket.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pocket.DAO.TransactionType;
+import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 
 import org.springframework.web.bind.annotation.*;

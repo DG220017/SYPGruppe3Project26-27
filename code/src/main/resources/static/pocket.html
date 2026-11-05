@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <!-- Passt die Darstellung an die Bildschirmbreite an. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket</title>
+    <title>Pocket – Finanzverwaltung</title>
     <style>
         /* Grundlayout mit heller Hintergrundfarbe. */
         * { box-sizing: border-box; }
@@ -98,10 +98,21 @@
                 <h2>Transaktionen</h2>
                 <button id="reloadButton" class="secondary" type="button">Aktualisieren</button>
             </div>
+            <div class="grid" style="margin-top: 12px;">
+                <div><label for="searchId">Transaktion nach ID suchen</label><input id="searchId" type="number" min="1" step="1" placeholder="z. B. 5"></div>
+                <div><label for="searchName">Transaktion nach Name suchen</label><input id="searchName" type="text" placeholder="Name"></div>
+                <div><label for="filterType">Nach Transaktionsart filtern</label><select id="filterType"><option value="">Alle Transaktionsarten</option></select></div>
+            </div>
+            <div class="toolbar" style="justify-content: flex-start; margin-top: 14px;">
+                <button id="searchIdButton" class="secondary" type="button">ID suchen</button>
+                <button id="searchNameButton" class="secondary" type="button">Name suchen</button>
+                <button id="filterButton" class="secondary" type="button">Typ filtern</button>
+                <button id="resetFilterButton" class="secondary" type="button">Alle anzeigen</button>
+            </div>
             <p id="listStatus">Noch keine Daten geladen.</p>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Datum</th><th>Notiz</th><th>Betrag</th><th>Kostenart</th><th>Transaktionsart</th><th>Aktion</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Datum</th><th>Notiz</th><th>Betrag</th><th>Kostenart</th><th>Transaktionsart</th><th>Aktion</th></tr></thead>
                     <tbody id="transactionRows"></tbody>
                 </table>
             </div>
@@ -109,22 +120,11 @@
     </div>
 </main>
 <script>
-    // API-MAPPING: Gleicher Server wie diese HTML-Datei; deshalb keine feste localhost-Adresse.
-    // Datei in src/main/resources/static/pocket.html ablegen und über Spring Boot öffnen.
-    const BASE_URL = "";
+    "use strict";
+    // Die HTML-Seite muss über Spring Boot ausgeliefert werden (gleiche Origin).
     const TRANSACTIONS_URL = "/api/transactions";
+    const AUTH_URL = "/api/auth";
 
-    // Anmeldung und Abmeldung werden im AuthController verarbeitet.
-    // Login-Vertrag: POST mit {email, password}; 2xx nur bei gültigen Zugangsdaten.
-    // Das Backend erstellt dabei eine Session mit Cookie; falsche Zugangsdaten ergeben 401.
-    // Logout-Vertrag: POST, Session im Backend beenden, danach 2xx zurückgeben.
-    const LOGIN_URL = "/api/auth/login";
-    const LOGOUT_URL = "/api/auth/logout";
-
-    // Kurze Hilfsfunktion, damit HTML-Elemente einfacher angesprochen werden können.
-    function element(id) { return document.getElementById(id); }
-
-    // Exakte Java-Enum-Konstanten als API-Werte, deutsche Texte für die Anzeige.
     const COST_TYPES = [
         ["RECURRING_REVENUE", "Regelmäßige Einnahmen"],
         ["RECURRING_EXPENSES", "Regelmäßige Ausgaben"],
@@ -139,11 +139,17 @@
         ["NEBENEINKOMMEN", "Nebeneinkommen"]
     ];
 
-    // Erzeugt die auswählbaren Optionen ohne zusätzliche Bibliothek.
-    function fillDropdown(id, values) {
+    const element = id => document.getElementById(id);
+    let loggedInThisPage = false;
+    let currentListRequest = 0;
+
+    function message(text) {
+        element("message").textContent = text;
+    }
+
+    function fillDropdown(id, items) {
         const select = element(id);
-        select.options[0].textContent = values.length ? "Bitte auswählen" : "Bitte auswählen";
-        for (const [value, label] of values) {
+        for (const [value, label] of items) {
             const option = document.createElement("option");
             option.value = value;
             option.textContent = label;
@@ -152,172 +158,219 @@
     }
     fillDropdown("costType", COST_TYPES);
     fillDropdown("transactionType", TRANSACTION_TYPES);
+    fillDropdown("filterType", TRANSACTION_TYPES);
 
-    // Statusmeldungen sicher als Text anzeigen.
-    function message(text) { element("message").textContent = text; }
-
-    // Lokale Anzeige zurücksetzen; beendet allein noch keine Backend-Session.
     function showLogin() {
-        element("dashboard").hidden = true;
+        loggedInThisPage = false;
+        currentListRequest++;
         element("loginView").hidden = false;
+        element("dashboard").hidden = true;
+        element("loginForm").reset();
         element("transactionRows").replaceChildren();
         element("transactionForm").reset();
-        element("loginForm").reset();
+        element("listStatus").textContent = "Noch keine Daten geladen.";
     }
 
-    // Gemeinsamer API-Aufruf: JSON senden, Session-Cookie mitsenden und HTTP-Fehler prüfen.
-    async function request(path, method = "GET", data) {
-        const options = { method: method, credentials: "same-origin" };
+    function showDashboard() {
+        loggedInThisPage = true;
+        element("loginView").hidden = true;
+        element("dashboard").hidden = false;
+    }
+
+    // Antwort auf HTTP-Status prüfen; bei Text-Fehlern nur kurze Meldung anzeigen.
+    async function api(path, method = "GET", data) {
+        const options = { method, credentials: "same-origin" };
         if (data !== undefined) {
             options.headers = { "Content-Type": "application/json" };
             options.body = JSON.stringify(data);
         }
-        // Falls Spring Security CSRF verwendet, hier dessen Token als Header ergänzen.
-        const response = await fetch(BASE_URL + path, options);
-        if (response.status === 401) {
-            showLogin();
-            throw new Error("Anmeldung erforderlich oder Zugangsdaten ungültig.");
+        let response;
+        try {
+            response = await fetch(path, options);
+        } catch (error) {
+            throw new Error("Backend nicht erreichbar. Bitte Spring Boot starten und die Seite über http://localhost:8080/ öffnen.");
         }
-        if (!response.ok) throw new Error("Anfrage fehlgeschlagen (HTTP " + response.status + ").");
+        if (!response.ok) {
+            const serverMessage = (await response.text().catch(() => "")).trim();
+            if (response.status === 401) throw new Error("Nicht autorisiert (401). Bitte anmelden.");
+            if (response.status === 404) throw new Error("Nicht gefunden (404). " + (method === "POST" && path.endsWith("/login") ? "E-Mail oder Passwort falsch." : ""));
+            if (response.status === 409) throw new Error(serverMessage || "Datensatz ist bereits vorhanden (409).");
+            if (response.status === 400) throw new Error(serverMessage || "Ungültige Eingaben (400).");
+            throw new Error("Serverfehler (HTTP " + response.status + "). Details in der Browser-Konsole oder im Spring-Boot-Log.");
+        }
         return response;
     }
 
-    // Login absenden. Kein Passwortvergleich im Browser und keine Passwortspeicherung.
-    element("loginForm").addEventListener("submit", async function(event) {
+    async function apiJson(path, method = "GET", data) {
+        const response = await api(path, method, data);
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    element("loginForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-        if (!LOGIN_URL) return message("Bitte zuerst den Login-Endpunkt im JavaScript eintragen und im Backend implementieren.");
-        const button = this.querySelector("button");
+        const button = this.querySelector('button[type="submit"]');
         button.disabled = true;
         try {
-            await request(LOGIN_URL, "POST", {
+            await api(AUTH_URL + "/login", "POST", {
                 email: element("email").value.trim(),
                 password: element("password").value
             });
             element("password").value = "";
-            element("loginView").hidden = true;
-            element("dashboard").hidden = false;
-            message("Angemeldet.");
+            showDashboard();
+            message("Erfolgreich angemeldet.");
             await loadTransactions();
-        } catch (error) { message(error.message); }
-        finally { button.disabled = false; }
+        } catch (error) {
+            message(error.message);
+        } finally {
+            button.disabled = false;
+        }
     });
 
-    // Registrierung verwendet die E-Mail und das Passwort aus dem Loginformular.
-    element("registerButton").addEventListener("click", async function() {
+    element("registerButton").addEventListener("click", async function () {
         if (!element("loginForm").reportValidity()) return;
         if (element("password").value.length < 8) {
-            message("Für ein neues Konto muss das Passwort mindestens 8 Zeichen haben.");
+            message("Das Passwort muss mindestens 8 Zeichen haben.");
             return;
         }
-
-        const buttons = element("loginForm").querySelectorAll("button");
-        for (const button of buttons) button.disabled = true;
+        const buttons = [...element("loginForm").querySelectorAll("button")];
+        buttons.forEach(button => button.disabled = true);
         try {
-            const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: element("email").value.trim(),
-                    password: element("password").value
-                })
+            await api(AUTH_URL + "/register", "POST", {
+                email: element("email").value.trim(),
+                password: element("password").value
             });
-            if (response.status === 201) {
-                message("Konto erstellt. Klicke jetzt auf Anmelden.");
-            } else if (response.status === 400 || response.status === 409) {
-                message(await response.text());
-            } else {
-                message("Registrierung fehlgeschlagen (HTTP " + response.status + ").");
-            }
+            message("Konto erstellt! Du kannst dich mit denselben Daten anmelden.");
         } catch (error) {
-            message("Backend nicht erreichbar. Öffne die Seite über http://localhost:8080/pocket.html.");
+            message(error.message);
         } finally {
-            for (const button of buttons) button.disabled = false;
+            buttons.forEach(button => button.disabled = false);
         }
     });
 
-    // Alle vom Backend freigegebenen Transaktionen laden und als Tabelle anzeigen.
-    async function loadTransactions() {
-        element("reloadButton").disabled = true;
-        element("transactionRows").replaceChildren();
-        element("listStatus").textContent = "Daten werden geladen …";
-        try {
-            const response = await request(TRANSACTIONS_URL);
-            const transactions = await response.json();
-            if (!Array.isArray(transactions)) throw new Error("Die API muss eine Liste von Transaktionen zurückgeben.");
-            element("listStatus").textContent = transactions.length + " Transaktionen gefunden.";
-            for (const transaction of transactions) {
-                const row = document.createElement("tr");
-                // textContent verhindert, dass Notizen als HTML ausgeführt werden.
-                const values = [transaction.id, transaction.date, transaction.notes,
-                    transaction.amount, transaction.costType, transaction.transactionType];
-                for (const value of values) {
-                    const cell = document.createElement("td");
-                    cell.textContent = value ?? "–";
-                    row.appendChild(cell);
-                }
-                // Jeder Datensatz erhält einen eigenen Löschbutton.
-                const cell = document.createElement("td");
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "delete";
-                button.textContent = "Löschen";
-                button.addEventListener("click", () => removeTransaction(transaction, button));
-                cell.appendChild(button);
-                row.appendChild(cell);
-                element("transactionRows").appendChild(row);
-            }
-        } catch (error) {
-            element("listStatus").textContent = "Daten konnten nicht geladen werden.";
-            message(error.message);
-        } finally { element("reloadButton").disabled = false; }
+    function formatValue(value) {
+        return value === null || value === undefined || value === "" ? "–" : String(value);
     }
 
-    // Neue Transaktion mit genau den Feldern deiner Entity als JSON senden.
-    element("transactionForm").addEventListener("submit", async function(event) {
+    function renderTransactions(transactions, description = null) {
+        element("transactionRows").replaceChildren();
+        element("listStatus").textContent = description || transactions.length + " Transaktionen gefunden.";
+        for (const transaction of transactions) {
+            const row = document.createElement("tr");
+            const fields = ["id", "name", "date", "notes", "amount", "costType", "transactionType"];
+            for (const field of fields) {
+                const cell = document.createElement("td");
+                cell.textContent = formatValue(transaction[field]);
+                row.appendChild(cell);
+            }
+            const cell = document.createElement("td");
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "delete";
+            button.textContent = "Löschen";
+            button.disabled = transaction.id == null;
+            button.addEventListener("click", () => removeTransaction(transaction.id, button));
+            cell.appendChild(button);
+            row.appendChild(cell);
+            element("transactionRows").appendChild(row);
+        }
+    }
+
+    // Alle Transaktionen: GET /api/transactions
+    async function loadTransactions(path = TRANSACTIONS_URL, single = false) {
+        if (!loggedInThisPage) return;
+        const requestId = ++currentListRequest;
+        element("reloadButton").disabled = true;
+        element("listStatus").textContent = "Daten werden geladen …";
+        try {
+            const result = await apiJson(path);
+            if (requestId !== currentListRequest || !loggedInThisPage) return;
+            const transactions = single ? [result] : result;
+            if (!Array.isArray(transactions)) throw new Error("Die API hat keine Transaktionsliste zurückgegeben.");
+            renderTransactions(transactions);
+        } catch (error) {
+            if (requestId !== currentListRequest) return;
+            element("listStatus").textContent = "Daten konnten nicht geladen werden.";
+            message(error.message);
+            console.error("Transaktionen konnten nicht geladen werden:", error);
+        } finally {
+            if (requestId === currentListRequest) element("reloadButton").disabled = false;
+        }
+    }
+
+    element("transactionForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-        const button = this.querySelector("button");
+        if (!loggedInThisPage) return;
+        const button = this.querySelector('button[type="submit"]');
         button.disabled = true;
         try {
-            await request(TRANSACTIONS_URL + "/addTransaction", "POST", {
+            await apiJson(TRANSACTIONS_URL + "/addTransaction", "POST", {
                 amount: Number(element("amount").value),
                 notes: element("notes").value.trim(),
                 date: element("date").value,
-                costType: element("costType").value.trim(),
-                transactionType: element("transactionType").value.trim()
+                costType: element("costType").value,
+                transactionType: element("transactionType").value
             });
             this.reset();
             message("Transaktion gespeichert.");
             await loadTransactions();
-        } catch (error) { message(error.message); }
-        finally { button.disabled = false; }
+        } catch (error) {
+            message(error.message);
+            console.error("Fehler beim Speichern:", error);
+        } finally {
+            button.disabled = false;
+        }
     });
 
-    // Dein DELETE-Endpunkt erwartet nach der Korrektur einen Transaction-Body.
-    async function removeTransaction(transaction, button) {
-        if (!confirm("Transaktion wirklich löschen?")) return;
+    // DELETE /api/transactions/removeTransaction/{id}: nur die ID in die URL.
+    async function removeTransaction(id, button) {
+        if (!loggedInThisPage || !confirm("Transaktion " + id + " wirklich löschen?")) return;
         button.disabled = true;
         try {
-            await request(TRANSACTIONS_URL + "/removeTransaction", "DELETE", transaction);
+            await api(TRANSACTIONS_URL + "/removeTransaction/" + encodeURIComponent(id), "DELETE");
             message("Transaktion gelöscht.");
             await loadTransactions();
-        } catch (error) { message(error.message); }
-        finally { button.disabled = false; }
+        } catch (error) {
+            message(error.message);
+            console.error("Fehler beim Löschen:", error);
+        } finally {
+            button.disabled = false;
+        }
     }
 
-    // Manuelles Neuladen der Tabelle.
-    element("reloadButton").addEventListener("click", loadTransactions);
+    element("reloadButton").addEventListener("click", () => loadTransactions());
+    element("resetFilterButton").addEventListener("click", () => loadTransactions());
+    element("searchIdButton").addEventListener("click", () => {
+        const id = element("searchId").value.trim();
+        if (!/^\d+$/.test(id) || Number(id) < 1) return message("Bitte eine gültige ID eingeben.");
+        loadTransactions(TRANSACTIONS_URL + "/findTransactionbyID/" + encodeURIComponent(id), true);
+    });
+    element("searchNameButton").addEventListener("click", () => {
+        const name = element("searchName").value.trim();
+        if (!name) return message("Bitte einen Namen eingeben.");
+        loadTransactions(TRANSACTIONS_URL + "/findTransactionbyName/" + encodeURIComponent(name), true);
+    });
+    element("filterButton").addEventListener("click", () => {
+        const type = element("filterType").value;
+        if (!type) return loadTransactions();
+        loadTransactions(TRANSACTIONS_URL + "/findAllTransactionsbyType/" + encodeURIComponent(type));
+    });
 
-    // Erst die Backend-Session beenden, dann wieder das Loginfenster anzeigen.
-    element("logoutButton").addEventListener("click", async function() {
-        if (!LOGOUT_URL) return message("Bitte zuerst den Logout-Endpunkt im JavaScript eintragen und im Backend implementieren.");
+    element("logoutButton").addEventListener("click", async function () {
         this.disabled = true;
         try {
-            await request(LOGOUT_URL, "POST");
+            await api(AUTH_URL + "/logout", "POST");
             showLogin();
-            message("Abgemeldet.");
-        } catch (error) { message(error.message); }
-        finally { this.disabled = false; }
+            message("Erfolgreich abgemeldet.");
+        } catch (error) {
+            message(error.message);
+        } finally {
+            this.disabled = false;
+        }
     });
+
+    // Der aktuelle AuthController hat keinen /me-Endpunkt. Nach Neuladen
+    // wird deshalb bewusst erneut das Loginformular angezeigt.
 </script>
 </body>
 </html>

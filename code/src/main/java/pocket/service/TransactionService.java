@@ -1,7 +1,7 @@
 package pocket.service;
 
 import jakarta.transaction.Transactional;
-import pocket.DAO.TransactionType;
+import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 import org.springframework.stereotype.Service;
 import pocket.exception.TransactionNotFoundException;
