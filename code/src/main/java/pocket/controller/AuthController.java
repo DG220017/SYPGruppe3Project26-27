@@ -14,7 +14,6 @@ import pocket.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:63342")
 public class AuthController {
 
     private final UserService userService;
