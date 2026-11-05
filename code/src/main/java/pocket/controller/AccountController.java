@@ -2,11 +2,11 @@ package pocket.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pocket.DTO.AccountResponse;
 import pocket.entity.Account;
 import org.springframework.web.bind.annotation.*;
 import pocket.exception.AccountNotFoundException;
 import pocket.service.AccountService;
-import pocket.service.TransactionService;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts(){
-        return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
+    public ResponseEntity<List<AccountResponse>> getAllAccounts(){
+        return new ResponseEntity<>(accountService.getAllAccounts().stream().map(AccountResponse::fromAcount).toList(), HttpStatus.OK);
     }
 
     @PostMapping("/addAccount")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account){
-        return new ResponseEntity<>(accountService.addAccount(account),HttpStatus.CREATED);
+    public ResponseEntity<AccountResponse> addAccount(@RequestBody Account account){
+        return new ResponseEntity<>(AccountResponse.fromAcount(accountService.addAccount(account)),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/removeAccount/{id}")
@@ -40,9 +40,9 @@ public class AccountController {
     }
 
     @GetMapping("/getAccountbyId/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable long id){
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable long id){
         try{
-            return new ResponseEntity<>(accountService.getAccountById(id), HttpStatus.OK);
+            return new ResponseEntity<>(AccountResponse.fromAcount(accountService.getAccountById(id)), HttpStatus.OK);
         }catch (AccountNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
