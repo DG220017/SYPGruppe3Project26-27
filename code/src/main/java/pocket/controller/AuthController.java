@@ -3,19 +3,30 @@ package pocket.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pocket.DTO.LoginData;
+
 import pocket.entity.PocketUser;
 import pocket.exception.PocketUserNotFoundException;
-import pocket.repository.UserRepository;
+
 import pocket.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:63342")
 public class AuthController {
+
+    // Nur diese beiden Werte werden vom Loginformular gesendet.
+    public static class Credentials {
+        private String email;
+        private String password;
+
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+    }
 
     private final UserService userService;
 
@@ -24,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginData login,
+    public ResponseEntity<Void> login(@RequestBody Credentials login,
                                       HttpServletRequest request) {
         // Ohne E-Mail oder Passwort ist keine Anmeldung möglich.
         if (login.getEmail() == null || login.getPassword() == null
@@ -47,12 +58,12 @@ public class AuthController {
             request.getSession(true).setAttribute("userId", user.getId());
             return ResponseEntity.ok().build();
         }catch (PocketUserNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     @PostMapping("/register")
-    public synchronized ResponseEntity<String> register(@RequestBody LoginData data) {
+    public synchronized ResponseEntity<String> register(@RequestBody Credentials data) {
         // Dieselben zwei Felder wie bei der Anmeldung.
         if (data.getEmail() == null || !data.getEmail().trim().matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+")
                 || data.getPassword() == null || data.getPassword().length() < 8) {
@@ -60,7 +71,7 @@ public class AuthController {
         }
 
         String email = data.getEmail().trim();
-        System.out.println(email);
+
         try {
             userService.getUserByEmail(email);
             return ResponseEntity.status(409).body("Diese E-Mail ist bereits registriert. Bitte anmelden.");
