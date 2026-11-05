@@ -62,7 +62,7 @@ public class TransactionController {
 
     @GetMapping("findAllTransactionsbyType")
     public ResponseEntity<List<Transaction>> getAllTransactionsByType(@PathVariable TransactionType type){
-        return new ResponseEntity<>(transactionService.getTransactionsAllByType(type), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(transactionService.getTransactionsAllByType(type), HttpStatus.OK);
     }
 
     // Für JUnit Test zwecke

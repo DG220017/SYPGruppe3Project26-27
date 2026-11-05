@@ -42,7 +42,7 @@ public class TransactionControllerTest {
     @BeforeEach
     public void createTransaction() {
         transaction1 = new Transaction("t1", 1L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction("t2", 2L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
+        transaction2 = new Transaction("t2", 2L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.FREIZEIT);
         transaction3 = new Transaction("t3", 3L, 120.5, "Test", LocalDate.of(2025, 5, 6), CostType.EXPENSES, TransactionType.BILLS);
     }
 
@@ -121,7 +121,7 @@ public class TransactionControllerTest {
 
     @Test
     public void testGetTransactionById(){
-        
+
         //Arrange
         Transaction transaction1 = new Transaction();
 
@@ -134,6 +134,29 @@ public class TransactionControllerTest {
         //Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transaction1, response.getBody());
+    }
+
+    @Test
+    public void testGetAllTransactionsByType(){
+
+        // Arrange
+        List<Transaction> expectedTransactions =
+                List.of(transaction1, transaction3);
+
+        when(service.getTransactionsAllByType(TransactionType.BILLS))
+                .thenReturn(expectedTransactions);
+
+        // Act
+        ResponseEntity<List<Transaction>> response =
+                controller.getAllTransactionsByType(TransactionType.BILLS);
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedTransactions, response.getBody());
+    }
+
+    @Test
+    public void testGetTransactionService(){
+        assertEquals(service, controller.getTransactionService());
     }
 }
 
