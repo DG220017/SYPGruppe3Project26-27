@@ -15,7 +15,7 @@ public class UserTest {
 
     @Test
     void userEmailTest(){
-        assertEquals("dzew", pocketUser.getEmail());
+        assertEquals("asd@asd.com", pocketUser.getEmail());
     }
 
     @Test
