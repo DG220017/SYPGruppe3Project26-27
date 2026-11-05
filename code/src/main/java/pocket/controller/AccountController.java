@@ -21,7 +21,7 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<List<Account>> getAllAccounts(){
-        return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
     }
 
     @PostMapping("/addAccount")
@@ -39,8 +39,8 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/getAccountbyId")
-    public ResponseEntity<Account> getAccountById(@RequestParam long id){
+    @GetMapping("/getAccountbyId/{id}")
+    public ResponseEntity<Account> getAccountById(@PathVariable long id){
         try{
             return new ResponseEntity<>(accountService.getAccountById(id), HttpStatus.OK);
         }catch (AccountNotFoundException e){

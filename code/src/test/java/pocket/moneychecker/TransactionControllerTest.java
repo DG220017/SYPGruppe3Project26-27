@@ -2,8 +2,8 @@ package pocket.moneychecker;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pocket.DAO.CostType;
-import pocket.DAO.TransactionType;
+import pocket.enums.CostType;
+import pocket.enums.TransactionType;
 import pocket.controller.TransactionController;
 import pocket.entity.Transaction;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,6 @@ import pocket.repository.TransactionRepository;
 import pocket.service.TransactionService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

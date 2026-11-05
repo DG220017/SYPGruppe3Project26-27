@@ -3,7 +3,7 @@ package pocket.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pocket.DAO.TransactionType;
+import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +42,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/findTransactionbyName")
+    @GetMapping("/findTransactionbyName/{name}")
     public ResponseEntity<Transaction> getTransactionByName(@PathVariable String name){
         try{
             return new ResponseEntity<>(transactionService.getTransactionByName(name),HttpStatus.OK);
@@ -51,7 +51,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/findTransactionbyID")
+    @GetMapping("/findTransactionbyID/{id}")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id){
         try{
             return new ResponseEntity<>(transactionService.getTransactionById(id),HttpStatus.OK);
@@ -60,7 +60,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("findAllTransactionsbyType")
+    @GetMapping("findAllTransactionsbyType/{type}")
     public ResponseEntity<List<Transaction>> getAllTransactionsByType(@PathVariable TransactionType type){
         return new ResponseEntity<>(transactionService.getTransactionsAllByType(type), HttpStatus.OK);
     }

@@ -2,41 +2,25 @@ package pocket.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pocket.DTO.LoginData;
 import pocket.entity.PocketUser;
+import pocket.exception.PocketUserNotFoundException;
 import pocket.repository.UserRepository;
+import pocket.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:63342")
 public class AuthController {
 
-    // Beim Login werden nur E-Mail und Passwort benötigt, keine Benutzer-ID.
-    public static class LoginData {
-        private String email;
-        private String password;
+    private final UserService userService;
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-    }
-
-    private final UserRepository userRepository;
-
-    public AuthController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -49,22 +33,22 @@ public class AuthController {
         }
 
         // Das vorhandene Benutzerkonto in der Datenbank suchen.
-        PocketUser user = userRepository
-                .findUserByEmail(login.getEmail().trim())
-                .orElse(null);
-
-        // Vergleich mit dem Passwort im bestehenden Datenmodell.
-        if (user == null || !login.getPassword().equals(user.getPassword())) {
-            return ResponseEntity.status(401).build();
+        try{
+            PocketUser user = userService.getUserByEmail(login.getEmail().trim());
+            // Vergleich mit dem Passwort im bestehenden Datenmodell.
+            if (user == null || !login.getPassword().equals(user.getPassword())) {
+                return ResponseEntity.status(401).build();
+            }
+            // Eine alte Sitzung ersetzen und nur die Benutzer-ID merken.
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                oldSession.invalidate();
+            }
+            request.getSession(true).setAttribute("userId", user.getId());
+            return ResponseEntity.ok().build();
+        }catch (PocketUserNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        // Eine alte Sitzung ersetzen und nur die Benutzer-ID merken.
-        HttpSession oldSession = request.getSession(false);
-        if (oldSession != null) {
-            oldSession.invalidate();
-        }
-        request.getSession(true).setAttribute("userId", user.getId());
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/register")
@@ -76,16 +60,18 @@ public class AuthController {
         }
 
         String email = data.getEmail().trim();
-        if (userRepository.findUserByEmail(email).isPresent()) {
+        System.out.println(email);
+        try {
+            userService.getUserByEmail(email);
             return ResponseEntity.status(409).body("Diese E-Mail ist bereits registriert. Bitte anmelden.");
+        } catch (PocketUserNotFoundException e) {
+            PocketUser user = new PocketUser();
+            user.setEmail(email);
+            user.setPassword(data.getPassword());
+            // Neues Konto im bestehenden Benutzermodell speichern.
+            userService.addUser(user);
+            return ResponseEntity.status(201).body("Konto erstellt. Du kannst dich jetzt anmelden.");
         }
-
-        // Neues Konto im bestehenden Benutzermodell speichern.
-        PocketUser user = new PocketUser();
-        user.setEmail(email);
-        user.setPassword(data.getPassword());
-        userRepository.save(user);
-        return ResponseEntity.status(201).body("Konto erstellt. Du kannst dich jetzt anmelden.");
     }
 
     @PostMapping("/logout")

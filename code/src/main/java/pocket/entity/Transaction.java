@@ -1,7 +1,7 @@
 package pocket.entity;
 
-import pocket.DAO.CostType;
-import pocket.DAO.TransactionType;
+import pocket.enums.CostType;
+import pocket.enums.TransactionType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ public class Transaction implements Comparable<Transaction>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private double amount;
 
@@ -44,7 +44,7 @@ public class Transaction implements Comparable<Transaction>{
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

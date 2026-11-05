@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/findUserbyId")
+    @GetMapping("/findUserbyId/{id}")
     public ResponseEntity<PocketUser> getUserById(@PathVariable Long id){
         try{
             return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
@@ -49,7 +49,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/findUserbyEmail")
+    @GetMapping("/findUserbyEmail{email}")
     public ResponseEntity<PocketUser> getUserByEmail(@PathVariable String email){
         try{
             return new ResponseEntity<>(userService.getUserByEmail(email),HttpStatus.OK);

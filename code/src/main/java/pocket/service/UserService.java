@@ -31,9 +31,7 @@ public class UserService {
 
     @Transactional
     public PocketUser getUserById(long id){
-        return userRepository.findById(id).orElseThrow(()->{
-            return new PocketUserNotFoundException("Pocketuser with ID: "+id+" could not be found");
-        });
+        return userRepository.findById(id).orElseThrow(()->new PocketUserNotFoundException("Pocketuser with ID: "+id+" could not be found"));
     }
 
     @Transactional

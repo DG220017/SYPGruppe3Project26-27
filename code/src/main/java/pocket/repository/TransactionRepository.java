@@ -1,6 +1,6 @@
 package pocket.repository;
 
-import pocket.DAO.TransactionType;
+import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
