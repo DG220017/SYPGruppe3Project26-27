@@ -6,6 +6,7 @@ import pocket.entity.Account;
 import org.springframework.web.bind.annotation.*;
 import pocket.exception.AccountNotFoundException;
 import pocket.service.AccountService;
+import pocket.service.TransactionService;
 
 import java.util.List;
 
@@ -47,4 +48,8 @@ public class AccountController {
         }
     }
 
+    // Für JUnit Test zwecke
+    public AccountService getAccountService() {
+        return accountService;
+    }
 }

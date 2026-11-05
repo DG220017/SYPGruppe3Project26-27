@@ -159,4 +159,3 @@ public class TransactionControllerTest {
         assertEquals(service, controller.getTransactionService());
     }
 }
-
