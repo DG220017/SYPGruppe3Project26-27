@@ -35,10 +35,13 @@ public class Account implements Comparable<Account>{
         return pocketUser;
     }
 
-    public Account(int id, String username, double balance) {
-        this.id = id;
+    public Account(String username, double balance) {
         this.username = username;
         this.balance = balance;
+    }
+
+    public void setPocketUser(PocketUser pocketUser){
+        this.pocketUser = pocketUser;
     }
 
     public List<Transaction> getTransactions() {
