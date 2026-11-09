@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import pocket.DTO.AccountResponse;
 import pocket.controller.AccountController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pocket.controller.TransactionController;
 import pocket.entity.Account;
+import pocket.entity.PocketUser;
 import pocket.entity.Transaction;
 import pocket.repository.AccountRepository;
 import pocket.repository.TransactionRepository;
@@ -20,6 +24,7 @@ import pocket.service.AccountService;
 import pocket.service.TransactionService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,10 +47,22 @@ public class AccountControllerTest {
     Account account3;
 
     @BeforeEach
-    public void createAccount(){
-        account1 = new Account(1, "ac1", 12.4);
-        account2 = new Account(2,"ac2", 67.4);
-        account3 = new Account(3, "ac3", 4.5);
+    public void createAccount() {
+        PocketUser user1 = new PocketUser("password123", "test@test.com");
+        PocketUser user2 = new PocketUser("password456", "test2@test.com");
+        PocketUser user3 = new PocketUser("password789", "test§@test.com");
+
+        // Erstelle den Account und übergib/setze den User
+        account1 = new Account("TestAccount", 100.0);
+        account1.setPocketUser(user1);
+
+        account2 = new Account( "TestAccount2", 12.4);
+        account2.setPocketUser(user2);
+
+        account3 = new Account( "TestAccount3", 4000);
+        account3.setPocketUser(user3);
+
+
     }
 
     @Test
@@ -54,9 +71,31 @@ public class AccountControllerTest {
         assertEquals(service, controller.getAccountService());
     }
 
+    @Test
+    void getAllAccounts() {
+
+    }
 
     @Test
-    void getAllAccounts(){
+    public void testAddAccount() {
+
+        // 1. Erstelle einen gültigen User (falls dein Account einen PocketUser benötigt)
+        PocketUser user = new PocketUser();
+        user.setId(1L); // Wichtig, damit getId() nicht null ist!
+
+        // 2. Setze den User in deinen Account (oder übergib ihn im Konstruktor)
+        account1.setPocketUser(user); // Falls es diesen Setter gibt, ansonsten im Konstruktor übergeben
+
+        // 3. Mocking für den Service
+        when(accountService.addAccount(account1)).thenReturn(account1);
+
+        // 4. Act
+        ResponseEntity<AccountResponse> response = controller.addAccount(account1);
+
+        // 5. Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        // Evtl. weitere Assertions je nach Aufbau von AccountResponse
+
 
     }
 }

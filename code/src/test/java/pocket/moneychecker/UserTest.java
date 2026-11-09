@@ -10,7 +10,7 @@ public class UserTest {
 
     @BeforeEach
     void setup(){
-        pocketUser = new PocketUser(1, "dzew","asd@asd.com");
+        pocketUser = new PocketUser("dzew","asd@asd.com");
     }
 
     @Test
