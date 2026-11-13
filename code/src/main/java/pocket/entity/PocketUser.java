@@ -39,7 +39,6 @@ public class PocketUser implements Comparable<PocketUser>{
 
 
     public PocketUser(String password, String email) {
-        this.id = id;
         this.password = password;
         this.email = email;
     }
