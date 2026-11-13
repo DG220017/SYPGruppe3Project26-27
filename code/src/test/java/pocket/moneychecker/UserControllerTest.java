@@ -37,9 +37,9 @@ public class UserControllerTest {
 
     @BeforeEach
     public void createUser(){
-        user1 = new PocketUser(1,"123","user1@email");
-        user2 = new PocketUser(2, "456", "user2@email");
-        user3 = new PocketUser(3,"789","user3@email");
+        user1 = new PocketUser("123","user1@email");
+        user2 = new PocketUser("456", "user2@email");
+        user3 = new PocketUser("789","user3@email");
     }
 
     @Test

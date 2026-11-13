@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import pocket.entity.Account;
+import pocket.entity.PocketUser;
 import pocket.repository.AccountRepository;
+import pocket.repository.UserRepository;
 
 @DataJpaTest
 public class AccountTest {
@@ -16,15 +18,19 @@ public class AccountTest {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     private Account account;
-    private
+    private PocketUser pocketUser;
 
     @BeforeEach
     void setup(){
         account = new Account("Name", 231698132);
+        pocketUser = new PocketUser("123", "test@gmail.com");
     }
 
     @Test
@@ -33,10 +39,12 @@ public class AccountTest {
         entityManager.clear();
         Account reloaded = accountRepository.findById(saved.getId()).orElseThrow();
 
+        PocketUser savedUser = userRepository.save(pocketUser);
+
         String expectedUser = "PocketUser{" +
-                "id=" + getId() +
-                ", password='" + getPassword() + '\'' +
-                ", email='" + getEmail() + '\'' +
+                "id=" + savedUser.getId() +
+                ", password='" + "123" + '\'' +
+                ", email='" + "test@gmail.com" + '\'' +
                 '}';
 
         String expected = "Account{" +

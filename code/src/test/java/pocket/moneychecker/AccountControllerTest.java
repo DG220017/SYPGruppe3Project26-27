@@ -43,9 +43,9 @@ public class AccountControllerTest {
 
     @BeforeEach
     public void createAccount(){
-        account1 = new Account(1, "ac1", 12.4);
-        account2 = new Account(2,"ac2", 67.4);
-        account3 = new Account(3, "ac3", 4.5);
+        account1 = new Account("ac1", 12.4);
+        account2 = new Account("ac2", 67.4);
+        account3 = new Account("ac3", 4.5);
     }
 
     @Test
