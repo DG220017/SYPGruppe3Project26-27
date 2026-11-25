@@ -2,6 +2,7 @@ package pocket.moneychecker;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pocket.DTO.TransactionResponse;
 import pocket.enums.CostType;
 import pocket.enums.TransactionType;
 import pocket.controller.TransactionController;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pocket.repository.TransactionRepository;
 import pocket.service.TransactionService;
 
+import java.awt.font.TransformAttribute;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -54,14 +56,14 @@ public class TransactionControllerTest {
     @Test
     public void testGetAllTransactions() {
         // Arrange
-        List<Transaction> expectedTransactions =
-                List.of(transaction1, transaction2, transaction3);
+        List<TransactionResponse> expectedTransactions =
+                List.of(TransactionResponse.fromTransaction(transaction1), TransactionResponse.fromTransaction(transaction2), TransactionResponse.fromTransaction(transaction3));
 
         when(service.getAllTransactions())
                 .thenReturn(expectedTransactions);
 
         // Act
-        ResponseEntity<List<Transaction>> response =
+        ResponseEntity<List<TransactionResponse>> response =
                 controller.getAllTransactions();
 
         // Assert
@@ -74,10 +76,10 @@ public class TransactionControllerTest {
 
         // Arrange
         when(service.addTransaction(transaction1))
-                .thenReturn(transaction1);
+                .thenReturn(TransactionResponse.fromTransaction(transaction1));
 
         // Act
-        ResponseEntity<Transaction> response =
+        ResponseEntity<TransactionResponse> response =
                 controller.addTransaction(transaction1);
 
         // Assert
@@ -87,12 +89,8 @@ public class TransactionControllerTest {
 
     @Test
     public void testRemoveTransaction(){
-        // Arrange
-        when(service.removeTransaction(2))
-                .thenReturn(transaction2);
-
         // Act
-        ResponseEntity<Transaction> response =
+        ResponseEntity<TransactionResponse> response =
                 controller.removeTransaction(2);
 
         // Assert
@@ -104,13 +102,13 @@ public class TransactionControllerTest {
     public void testGetTransactionByName() {
 
         // Arrange
-        Transaction transaction1 = new Transaction();
-
+        Transaction transaction = new Transaction();
+        TransactionResponse transaction1 = TransactionResponse.fromTransaction(transaction);
         when(service.getTransactionByName("t1"))
                 .thenReturn(transaction1);
 
         // Act
-        ResponseEntity<Transaction> response =
+        ResponseEntity<TransactionResponse> response =
                 controller.getTransactionByName("t1");
 
         // Assert
@@ -122,12 +120,12 @@ public class TransactionControllerTest {
     public void testGetTransactionById(){
 
         //Arrange
-        Transaction transaction1 = new Transaction();
-
+        Transaction transaction = new Transaction();
+        TransactionResponse transaction1 = TransactionResponse.fromTransaction(transaction);
         when(service.getTransactionById(1L)).thenReturn(transaction1);
 
         //Act
-        ResponseEntity<Transaction> response =
+        ResponseEntity<TransactionResponse> response =
                 controller.getTransactionById(1L);
 
         //Assert
@@ -139,14 +137,14 @@ public class TransactionControllerTest {
     public void testGetAllTransactionsByType(){
 
         // Arrange
-        List<Transaction> expectedTransactions =
-                List.of(transaction1, transaction3);
+        List<TransactionResponse> expectedTransactions =
+                List.of(TransactionResponse.fromTransaction(transaction1),TransactionResponse.fromTransaction(transaction3));
 
         when(service.getTransactionsAllByType(TransactionType.BILLS))
                 .thenReturn(expectedTransactions);
 
         // Act
-        ResponseEntity<List<Transaction>> response =
+        ResponseEntity<List<TransactionResponse>> response =
                 controller.getAllTransactionsByType(TransactionType.BILLS);
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());

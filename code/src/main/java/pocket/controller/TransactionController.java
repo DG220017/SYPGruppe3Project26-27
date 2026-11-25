@@ -3,6 +3,7 @@ package pocket.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pocket.DTO.TransactionResponse;
 import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 
@@ -23,12 +24,12 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Transaction>> getAllTransactions(){
+    public ResponseEntity<List<TransactionResponse>> getAllTransactions(){
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
     }
 
     @PostMapping("/addTransaction")
-    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction){
+    public ResponseEntity<TransactionResponse> addTransaction(@RequestBody Transaction transaction){
          return new ResponseEntity<>(transactionService.addTransaction(transaction), HttpStatus.CREATED);
     }
 
@@ -43,7 +44,7 @@ public class TransactionController {
     }
 
     @GetMapping("/findTransactionbyName/{name}")
-    public ResponseEntity<Transaction> getTransactionByName(@PathVariable String name){
+    public ResponseEntity<TransactionResponse> getTransactionByName(@PathVariable String name){
         try{
             return new ResponseEntity<>(transactionService.getTransactionByName(name),HttpStatus.OK);
         }catch (TransactionNotFoundException e){
@@ -52,7 +53,7 @@ public class TransactionController {
     }
 
     @GetMapping("/findTransactionbyID/{id}")
-    public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id){
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id){
         try{
             return new ResponseEntity<>(transactionService.getTransactionById(id),HttpStatus.OK);
         }catch (TransactionNotFoundException e){
@@ -61,7 +62,7 @@ public class TransactionController {
     }
 
     @GetMapping("findAllTransactionsbyType/{type}")
-    public ResponseEntity<List<Transaction>> getAllTransactionsByType(@PathVariable TransactionType type){
+    public ResponseEntity<List<TransactionResponse>> getAllTransactionsByType(@PathVariable TransactionType type){
         return new ResponseEntity<>(transactionService.getTransactionsAllByType(type), HttpStatus.OK);
     }
 

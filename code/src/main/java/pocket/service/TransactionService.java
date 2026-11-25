@@ -1,6 +1,7 @@
 package pocket.service;
 
 import jakarta.transaction.Transactional;
+import pocket.DTO.TransactionResponse;
 import pocket.enums.TransactionType;
 import pocket.entity.Transaction;
 import org.springframework.stereotype.Service;
@@ -20,45 +21,46 @@ public class TransactionService {
     }
 
     @Transactional
-    public List<Transaction> getAllTransactions(){
-        return transactionRepository.findAll();
+    public List<TransactionResponse> getAllTransactions(){
+        return transactionRepository.findAll().stream().sorted().map(TransactionResponse::fromTransaction).toList();
     }
 
     //To be done!
     @Transactional
-    public void getTransactionsInTimespan(LocalDate from, LocalDate to){}
+    public void getTransactionsInTimespan(LocalDate from, LocalDate to){
 
-    @Transactional
-    public Transaction addTransaction(Transaction transaction){
-        return transactionRepository.save(transaction);
     }
 
     @Transactional
-    public Transaction removeTransaction(long id){
+    public TransactionResponse addTransaction(Transaction transaction){
+        return TransactionResponse.fromTransaction(transactionRepository.save(transaction));
+    }
+
+    @Transactional
+    public void removeTransaction(long id){
         Transaction transaction = getTransactionById(id);
         transactionRepository.delete(transaction);
-        return transaction;
     }
 
     @Transactional
-    public Transaction getTransactionById(long id){
+    public TransactionResponse getTransactionById(long id){
 
-        return transactionRepository.findById(id).orElseThrow(()->
+        return TransactionResponse.fromTransaction(transactionRepository.findById(id).orElseThrow(()->
         {
             throw new IllegalArgumentException("Transaction with Id: "+ id +" could not be found.");
-        });
+        }));
     }
 
     @Transactional
-    public Transaction getTransactionByName(String name){
-        return transactionRepository.findByName(name).orElseThrow(()->{
+    public TransactionResponse getTransactionByName(String name){
+        return TransactionResponse.fromTransaction(transactionRepository.findByName(name).orElseThrow(()->{
             return new TransactionNotFoundException("Transaction with name: "+name+" could not be found.");
-        });
+        }));
     }
 
     @Transactional
-    public List<Transaction> getTransactionsAllByType(TransactionType type){
-        return transactionRepository.findAllByTransactionType(type);
+    public List<TransactionResponse> getTransactionsAllByType(TransactionType type){
+        return transactionRepository.findAllByTransactionType(type).stream().sorted().map(TransactionResponse::fromTransaction).toList();
     }
 
 }
