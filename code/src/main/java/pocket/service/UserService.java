@@ -1,6 +1,7 @@
 package pocket.service;
 
 import jakarta.transaction.Transactional;
+import pocket.DTO.PocketUserResponse;
 import pocket.entity.PocketUser;
 import org.springframework.stereotype.Service;
 import pocket.exception.PocketUserNotFoundException;
@@ -18,8 +19,8 @@ public class UserService {
     }
 
     @Transactional
-    public List<PocketUser> getAllUsers(){
-        return userRepository.findAll();
+    public List<PocketUserResponse> getAllUsers(){
+        return userRepository.findAll().stream().map(PocketUserResponse :: fromPocketUser).toList();
     }
 
     @Transactional
