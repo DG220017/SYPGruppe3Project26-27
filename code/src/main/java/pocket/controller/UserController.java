@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PocketUserResponse>> getAllUsers(){
-         return new ResponseEntity<>(userService.getAllUsers().stream().map(PocketUserResponse::fromPocketUser).toList(), HttpStatus.OK);
+    public ResponseEntity<List<PocketUserResponse>> getAllUser(){
+         return new ResponseEntity(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping("/addUser")
