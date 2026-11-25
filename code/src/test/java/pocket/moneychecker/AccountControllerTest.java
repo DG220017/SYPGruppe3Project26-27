@@ -132,7 +132,7 @@ public class AccountControllerTest {
                 .thenReturn(account1);
 
         // Act
-        ResponseEntity<AccountResponse> response =
+        ResponseEntity<Void> response =
                 controller.removeAccount(account1.getId());
 
         // Assert
@@ -140,5 +140,4 @@ public class AccountControllerTest {
 
         verify(service).removeAccount(account1.getId());
     }
-
 }
