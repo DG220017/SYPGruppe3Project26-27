@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pocket.DTO.AccountResponse;
+import pocket.DTO.PocketUserResponse;
 import pocket.controller.AccountController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,10 @@ import pocket.repository.TransactionRepository;
 import pocket.service.AccountService;
 import pocket.service.TransactionService;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +49,8 @@ public class AccountControllerTest {
     Account account2;
 
     Account account3;
+    private PocketUserResponse pocketUserResponse;
+    private PocketUserResponse pocketUserResponse2;
 
     @BeforeEach
     public void createAccount() {
@@ -72,7 +78,28 @@ public class AccountControllerTest {
 
     @Test
     void getAllAccounts() {
+        // Arrange
+        List<Account> accounts = List.of(account1, account2);
 
+        PocketUserResponse pocketUserResponse =
+                new PocketUserResponse(0L, "test@test.com", List.of());
+
+        PocketUserResponse pocketUserResponse2 =
+                new PocketUserResponse(0L, "test2@test.com", List.of());
+
+        List<AccountResponse> expectedAccounts = List.of(
+                new AccountResponse(0, "TestAccount", 100.0, List.of(), pocketUserResponse),
+                new AccountResponse(0, "TestAccount2", 12.4, List.of(), pocketUserResponse2));
+
+        when(service.getAllAccounts()).thenReturn(accounts);
+
+        // Act
+        ResponseEntity<List<AccountResponse>> response =
+                controller.getAllAccounts();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedAccounts, response.getBody());
     }
 
     @Test
@@ -95,5 +122,22 @@ public class AccountControllerTest {
         // Evtl. weitere Assertions je nach Aufbau von AccountResponse
 
 
+    }
+
+    @Test
+    public void testRemoveAccount(){
+
+        // Arrange
+        when(service.removeAccount(account1.getId()))
+                .thenReturn(account1);
+
+        // Act
+        ResponseEntity<Void> response =
+                controller.removeAccount(account1.getId());
+
+        // Assert
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        verify(service).removeAccount(account1.getId());
     }
 }
