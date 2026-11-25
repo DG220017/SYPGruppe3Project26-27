@@ -73,7 +73,7 @@ public class TransactionControllerTest {
 
     @Test
     public void testAddTransaction() {
-
+        TransactionResponse tr = TransactionResponse.fromTransaction(transaction1);
         // Arrange
         when(service.addTransaction(transaction1))
                 .thenReturn(TransactionResponse.fromTransaction(transaction1));
@@ -84,7 +84,7 @@ public class TransactionControllerTest {
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(transaction1, response.getBody());
+        assertEquals(tr, response.getBody());
     }
 
     @Test
