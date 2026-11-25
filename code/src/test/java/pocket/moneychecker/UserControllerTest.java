@@ -99,8 +99,9 @@ public class UserControllerTest {
     @Test
     public void testRemoveUser(){
 
+
         when(service.removeUser(1L))
-                .thenReturn(user1);
+                .thenReturn(PocketUserResponse.fromPocketUser(user1));
 
         // Act
         ResponseEntity<Void> response =
@@ -119,7 +120,7 @@ public class UserControllerTest {
         PocketUserResponse pocketUser = PocketUserResponse.fromPocketUser(user1);
 
 
-        when(service.getUserById(1L)).thenReturn(user1);
+        when(service.getUserById(1L)).thenReturn(pocketUser);
 
         //Act
         ResponseEntity<PocketUserResponse> response =
