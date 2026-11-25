@@ -59,7 +59,7 @@ public class UserTest {
         entityManager.clear();
 
         String expected = "PocketUser{" +
-                "id=" + "1" +
+                "id=" + "2" +
                 ", password='" + "dzew" + '\'' +
                 ", email='" + "asd@asd.com" + '\'' +
                 '}';

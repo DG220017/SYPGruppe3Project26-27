@@ -74,7 +74,7 @@ public class UserControllerTest {
                 .thenReturn(user1);
 
         // Act
-        ResponseEntity<Transaction> response =
+        ResponseEntity<PocketUserResponse> response =
                 controller.addUser(user1);
 
         // Assert

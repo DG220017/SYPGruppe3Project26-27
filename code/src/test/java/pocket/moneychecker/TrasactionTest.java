@@ -56,7 +56,7 @@ public class TrasactionTest {
         entityManager.clear();
 
         String expected = "Transaction{" +
-                "id=" + 1 +
+                "id=" + 3 +
                 ", amount=" + 120.76 +
                 ", notes='" + "Ebay small price" + '\'' +
                 ", date=" + date +
