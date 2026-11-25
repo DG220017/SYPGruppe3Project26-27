@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import pocket.DTO.LoginData;
 import pocket.entity.PocketUser;
 import pocket.exception.PocketUserNotFoundException;
 
@@ -34,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody Credentials login,
+    public ResponseEntity<Void> login(@RequestBody LoginData login,
                                       HttpServletRequest request) {
         // Ohne E-Mail oder Passwort ist keine Anmeldung möglich.
         if (login.getEmail() == null || login.getPassword() == null

@@ -2,17 +2,19 @@ package pocket.moneychecker;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import pocket.entity.Account;
 import pocket.entity.PocketUser;
 import pocket.repository.AccountRepository;
 import pocket.repository.UserRepository;
 
-@DataJpaTest
+@SpringBootTest
+@Transactional
 public class AccountTest {
 
     @Autowired
@@ -31,15 +33,19 @@ public class AccountTest {
     void setup(){
         account = new Account("Name", 231698132);
         pocketUser = new PocketUser("123", "test@gmail.com");
+        pocketUser.addAccount(account);
+        account.setPocketUser(pocketUser);
     }
 
     @Test
     void hasRightToString(){
+        PocketUser savedUser = userRepository.saveAndFlush(pocketUser);
+        entityManager.clear();
         Account saved = accountRepository.saveAndFlush(account);
         entityManager.clear();
         Account reloaded = accountRepository.findById(saved.getId()).orElseThrow();
 
-        PocketUser savedUser = userRepository.save(pocketUser);
+
 
         String expectedUser = "PocketUser{" +
                 "id=" + savedUser.getId() +
@@ -56,8 +62,5 @@ public class AccountTest {
 
         Assertions.assertEquals(expected, reloaded.toString());
     }
-
-
-
 
 }

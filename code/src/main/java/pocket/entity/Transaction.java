@@ -30,12 +30,11 @@ public class Transaction implements Comparable<Transaction>{
     private TransactionType transactionType;
 
     public Transaction() {
-
+        // für JPA
     }
 
-    public Transaction(String name, Long id, double amount, String notes, LocalDate date,
+    public Transaction(String name, double amount, String notes, LocalDate date,
                        CostType costType, TransactionType transactionType) {
-        this.id = id;
         this.amount = amount;
         this.notes = notes;
         this.date = date;

@@ -230,7 +230,6 @@
         ["SHOPPING", "Shopping"], ["BILLS", "Rechnungen"],
         ["NEBENEINKOMMEN", "Nebeneinkommen"]
     ];
-    const money = new Intl.NumberFormat("de-AT", { style: "currency", currency: "EUR" });
     let busy = false;
 
     function element(id) { return document.getElementById(id); }
@@ -249,11 +248,8 @@
         }
     }
 
-
     let loggedInThisPage = false;
     let currentListRequest = 0;
-
-
 
     function fillDropdown(id, items) {
         const select = element(id);
@@ -261,7 +257,7 @@
             const option = document.createElement("option");
             option.value = value;
             option.textContent = label;
-            element(id).appendChild(option);
+            select.appendChild(option);
         }
     }
     fillDropdown("costType", COST_TYPES);
@@ -415,9 +411,16 @@
         event.preventDefault();
         if (!loggedInThisPage) return;
         if (busy || !this.reportValidity()) return;
+        const name = element("name").value.trim();
+        if (!name) {
+            message("Bitte einen Namen für die Transaktion eingeben.", true);
+            element("name").focus();
+            return;
+        }
         setBusy(true);
         try {
             await apiJson(TRANSACTIONS_URL + "/addTransaction", "POST", {
+                name: name,
                 amount: Number(element("amount").value),
                 notes: element("notes").value.trim(),
                 date: element("date").value,
