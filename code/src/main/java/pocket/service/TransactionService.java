@@ -38,8 +38,8 @@ public class TransactionService {
 
     @Transactional
     public void removeTransaction(long id){
-        Transaction transaction = getTransactionById(id);
-        transactionRepository.delete(transaction);
+      Transaction transaction = getTransaction(id);
+      transactionRepository.delete(transaction);
     }
 
     @Transactional
@@ -62,5 +62,12 @@ public class TransactionService {
     public List<TransactionResponse> getTransactionsAllByType(TransactionType type){
         return transactionRepository.findAllByTransactionType(type).stream().sorted().map(TransactionResponse::fromTransaction).toList();
     }
+    @Transactional
+    private Transaction getTransaction(long id){
 
+        return transactionRepository.findById(id).orElseThrow(()->
+        {
+            throw new IllegalArgumentException("Transaction with Id: "+ id +" could not be found.");
+        });
+    }
 }
