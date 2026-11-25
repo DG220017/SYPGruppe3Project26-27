@@ -80,13 +80,12 @@ public class AccountControllerTest {
 
         // 1. Erstelle einen gültigen User (falls dein Account einen PocketUser benötigt)
         PocketUser user = new PocketUser();
-        user.setId(1L); // Wichtig, damit getId() nicht null ist!
 
         // 2. Setze den User in deinen Account (oder übergib ihn im Konstruktor)
         account1.setPocketUser(user); // Falls es diesen Setter gibt, ansonsten im Konstruktor übergeben
 
         // 3. Mocking für den Service
-        when(accountService.addAccount(account1)).thenReturn(account1);
+        when(service.addAccount(account1)).thenReturn(account1);
 
         // 4. Act
         ResponseEntity<AccountResponse> response = controller.addAccount(account1);
