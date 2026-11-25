@@ -27,12 +27,13 @@ public class TrasactionTest {
 
     private Transaction transaction1;
     private Transaction transaction2;
+    private LocalDate date = LocalDate.now();
 
     @BeforeEach
     void setup(){
-        transaction1 = new Transaction("Couch", 120.76, "Ebay small price", LocalDate.now(),
+        transaction1 = new Transaction("Couch", 120.76, "Ebay small price", date,
                 CostType.EXPENSES, TransactionType.BILLS);
-        transaction2 = new Transaction("Chair", 1600, "Big golden chair", LocalDate.now(),
+        transaction2 = new Transaction("Chair", 1600, "Big golden chair", date,
                 CostType.EXPENSES, TransactionType.BILLS);
     }
 
@@ -47,5 +48,23 @@ public class TrasactionTest {
         Assertions.assertEquals(saved1, saved1);
         Assertions.assertNotEquals(null, saved1);
         Assertions.assertEquals(saved1.hashCode(), saved1.hashCode());
+    }
+
+    @Test
+    void toStringTest(){
+        Transaction saved1 = transactionRepository.saveAndFlush(transaction1);
+        entityManager.clear();
+
+        String expected = "Transaction{" +
+                "id=" + 1 +
+                ", amount=" + 120.76 +
+                ", notes='" + "Ebay small price" + '\'' +
+                ", date=" + date +
+                ", costType=" + CostType.EXPENSES +
+                ", transactionType=" + TransactionType.BILLS +
+                ", name=" + "Couch" +
+                '}';
+
+        Assertions.assertEquals(expected, saved1.toString());
     }
 }
