@@ -20,19 +20,18 @@ public class UserService {
 
     @Transactional
     public List<PocketUserResponse> getAllUsers(){
-        return userRepository.findAll().stream().map(PocketUserResponse :: fromPocketUser).toList();
+        return userRepository.findAll().stream().map(PocketUserResponse :: fromPocketUser).sorted().toList();
     }
 
     @Transactional
-    public PocketUser removeUser(long id){
-        PocketUser pocketUser = getUserById(id);
-        userRepository.delete(pocketUser);
+    public PocketUserResponse removeUser(long id){
+        PocketUserResponse pocketUser = getUserById(id);
         return pocketUser;
     }
 
     @Transactional
-    public PocketUser getUserById(long id){
-        return userRepository.findById(id).orElseThrow(()->new PocketUserNotFoundException("Pocketuser with ID: "+id+" could not be found"));
+    public PocketUserResponse getUserById(long id){
+        return PocketUserResponse.fromPocketUser(userRepository.findById(id).orElseThrow(()->new PocketUserNotFoundException("Pocketuser with ID: "+id+" could not be found")));
     }
 
     @Transactional

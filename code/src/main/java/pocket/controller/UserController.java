@@ -44,7 +44,7 @@ public class UserController {
     @GetMapping("/findUserbyId/{id}")
     public ResponseEntity<PocketUserResponse> getUserById(@PathVariable Long id){
         try{
-            return new ResponseEntity<>(PocketUserResponse.fromPocketUser(userService.getUserById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
         }catch (PocketUserNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
